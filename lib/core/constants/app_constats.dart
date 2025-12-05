@@ -1,0 +1,3 @@
+class AppConstats {
+  static const String annoneKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdhb2d0bWhvYXZicm1ibGJiZndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNDczNDQsImV4cCI6MjA3OTgyMzM0NH0.tiWot_--us3ZDFALz9rgO2flMBZty4cqZSu0-YKFHx8';
+}

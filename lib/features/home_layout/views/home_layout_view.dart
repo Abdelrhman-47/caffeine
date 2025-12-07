@@ -1,6 +1,7 @@
 import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/features/cart/views/cart_view.dart';
 import 'package:caffeine/features/favorite/views/favorite_view.dart';
+import 'package:caffeine/features/home/cubit/product_cubit.dart';
 import 'package:caffeine/features/home/view/home_view.dart';
 import 'package:caffeine/features/home_layout/cubit/nav_bar_cubit.dart';
 import 'package:caffeine/features/home_layout/cubit/nav_bar_state.dart';
@@ -15,7 +16,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeLayoutView extends StatelessWidget {
   HomeLayoutView({super.key});
-  final List<Widget> Screen = [HomeView(), CartView(), FavoritesView(), BlocProvider(create: (context)=>getIt<UserDataCubit>(),
+  final List<Widget> Screen = [BlocProvider(
+    create: (context) => getIt<ProductCubit>()..getAllProducts(),
+    child: HomeView(),
+  ), CartView(), FavoritesView(), BlocProvider(create: (context)=>getIt<UserDataCubit>(),
   child: ProfileView())];
   @override
   Widget build(BuildContext context) {

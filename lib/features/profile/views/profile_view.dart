@@ -4,7 +4,9 @@ import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
 import 'package:caffeine/features/profile/views/edit_profile.dart';
+import 'package:caffeine/features/profile/widgets/menu_item.dart';
 import 'package:caffeine/features/profile/widgets/profile_inf.dart';
+import 'package:caffeine/features/profile/widgets/stat_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -76,24 +78,24 @@ class _ProfileViewState extends State<ProfileView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _StatCard(
+                    StatCard(
                       icon: Icons.shopping_bag,
                       value: '24',
                       label: 'Orders',
                     ),
-                    _StatCard(
+                    StatCard(
                       icon: Icons.favorite,
                       value: '12',
                       label: 'Favorites',
                     ),
-                    _StatCard(icon: Icons.star, value: '450', label: 'Points'),
+                    StatCard(icon: Icons.star, value: '450', label: 'Points'),
                   ],
                 ),
 
                 Spacing.vSpace(30.h),
 
                 // Menu Items
-                _MenuItem(
+                MenuItem(
                   icon: Icons.person_outline,
                   title: 'Edit Profile',
                   onTap: () {
@@ -108,22 +110,22 @@ class _ProfileViewState extends State<ProfileView> {
                     );
                   },
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.location_on_outlined,
                   title: 'My Addresses',
                   onTap: () {},
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.receipt_long_outlined,
                   title: 'Order History',
                   onTap: () {},
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.payment_outlined,
                   title: 'Payment Methods',
                   onTap: () {},
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.notifications_outlined,
                   title: 'Notifications',
                   onTap: () {},
@@ -133,12 +135,12 @@ class _ProfileViewState extends State<ProfileView> {
                     activeColor: AppColors.primaryColor,
                   ),
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.help_outline,
                   title: 'Help & Support',
                   onTap: () {},
                 ),
-                _MenuItem(
+                MenuItem(
                   icon: Icons.info_outline,
                   title: 'About',
                   onTap: () {},
@@ -183,103 +185,3 @@ class _ProfileViewState extends State<ProfileView> {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-
-  const _StatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassContainer(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-      color: AppColors.primaryColor.withOpacity(.1),
-      borderRadius: BorderRadius.circular(15.r),
-      border: Border.all(color: AppColors.primaryColor.withOpacity(.2)),
-      child: Column(
-        children: [
-          Icon(icon, color: AppColors.primaryColor, size: 28.sp),
-          Spacing.vSpace(8.h),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
-            ),
-          ),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final Widget? trailing;
-
-  const _MenuItem({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.trailing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 12.h),
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(.1),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Icon(icon, color: AppColors.primaryColor, size: 22.sp),
-            ),
-            Spacing.hSpace(15.w),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-            trailing ??
-                Icon(Icons.arrow_forward_ios, size: 16.sp, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
-}

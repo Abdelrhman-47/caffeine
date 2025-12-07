@@ -46,7 +46,11 @@ class UserRepoImplement extends UserRepo {
       if (response.user == null) {
         return left(AuthException('Login failed: No user returned'));
       }
-      _sharedPref.saveToken(response.session!.accessToken);
+_supabase.auth.onAuthStateChange.listen((data) {
+  if (data.event == AuthChangeEvent.tokenRefreshed) {
+    _sharedPref.saveToken(data.session!.accessToken);
+  }
+});      _sharedPref.saveLogin();
       return right(response.user!);
     } on AuthException catch (e) {
       return Left(e);

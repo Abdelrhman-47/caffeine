@@ -3,14 +3,13 @@
   import 'package:caffeine/core/helpers/spacing.dart';
   import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
   import 'package:caffeine/features/profile/cubit/user_data_state.dart';
-import 'package:caffeine/features/profile/views/profile_view.dart';
+import 'package:caffeine/features/profile/widgets/input_feild.dart';
   import 'package:flutter/material.dart';
   import 'package:flutter_bloc/flutter_bloc.dart';
   import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
   import 'package:image_picker/image_picker.dart';
 
-import '../../../core/routing/app_routes.dart';
-import '../../../core/utils/di_helpers.dart';
   
   class EditProfileView extends StatefulWidget {
     const EditProfileView({super.key});
@@ -23,7 +22,6 @@ import '../../../core/utils/di_helpers.dart';
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _emailController = TextEditingController();
     XFile? _selectedImage;
-    bool _isLoading = false;
     String? _currentImageUrl;
   
     @override
@@ -38,6 +36,7 @@ import '../../../core/utils/di_helpers.dart';
     @override
     void dispose() {
       _nameController.dispose();
+      _emailController.dispose();
       super.dispose();
     }
   
@@ -51,35 +50,20 @@ import '../../../core/utils/di_helpers.dart';
               _currentImageUrl = state.userData.imageUrl;
               if (_selectedImage != null) return;
           } else if (state is ImagePicking) {
-            _isLoading = true;
+            // _isLoading = true;
           } else if (state is ImagePicked) {
-            // Show picked local image immediately
               _selectedImage = XFile(state.localPath);
-              _isLoading = false;
           } else if (state is ImageUploaded) {
-            // Update current image URL with uploaded URL
               _currentImageUrl = state.image;
-              _isLoading = false;
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Image uploaded successfully')),
-            );
+    
           } else if (state is ProfileUpdateSuccess) {
-            setState(() => _isLoading = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Profile updated successfully')),
-            );
             context.read<UserDataCubit>().fetchUserData();
-            Navigator.push(context, MaterialPageRoute(builder: (_)=>BlocProvider(
-  create: (context) => getIt<UserDataCubit>(),
-  child: ProfileView(),
-)))    ;      } else if (state is UserDataFailure) {
-            setState(() => _isLoading = false);
+            context.pop();
+      } else if (state is UserDataFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-          } else if (state is ImageSelectionCancelled) {
-             _isLoading = false;
-          }
+          } 
         },
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -229,8 +213,7 @@ import '../../../core/utils/di_helpers.dart';
   
                           Spacing.vSpace(40.h),
   
-                          // Name Field
-                          _InputField(
+                          InputField(
                             label: 'Full Name',
                             controller: _nameController,
                             icon: Icons.person_outline,
@@ -239,8 +222,7 @@ import '../../../core/utils/di_helpers.dart';
   
                           Spacing.vSpace(20.h),
   
-                          // Email Field (Read-only)
-                          _InputField(
+                          InputField(
                             label: 'Email',
                             controller: _emailController,
                             icon: Icons.email_outlined,
@@ -255,11 +237,8 @@ import '../../../core/utils/di_helpers.dart';
   
                           Spacing.vSpace(50.h),
   
-                          // Save Button (always visible)
                           GestureDetector(
-                            onTap: _isLoading
-                                ? null
-                                : () {
+                            onTap: () {
                                     final state = context.read<UserDataCubit>().state;
                                     String imageUrlToSend = '';
                                     if (state is ImageUploaded) {
@@ -275,7 +254,6 @@ import '../../../core/utils/di_helpers.dart';
                                           imageUrl: imageUrlToSend,
                                         );
   
-                                    setState(() => _isLoading = true);
                                   },
                             child: Container(
                               width: double.infinity,
@@ -298,19 +276,7 @@ import '../../../core/utils/di_helpers.dart';
                                   ),
                                 ],
                               ),
-                              child: _isLoading
-                                  ? Center(
-                                      child: SizedBox(
-                                        width: 24.w,
-                                        height: 24.h,
-                                        child:
-                                            const CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2,
-                                            ),
-                                      ),
-                                    )
-                                  : Text(
+                              child: Text(
                                       'Save Changes',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -336,120 +302,5 @@ import '../../../core/utils/di_helpers.dart';
     }
   }
   
-  class _InputField extends StatelessWidget {
-    final String label;
-    final TextEditingController controller;
-    final IconData icon;
-    final String hint;
-    final bool readOnly;
-    final Widget? suffixIcon;
   
-    const _InputField({
-      required this.label,
-      required this.controller,
-      required this.icon,
-      required this.hint,
-      this.readOnly = false,
-      this.suffixIcon,
-    });
   
-    @override
-    Widget build(BuildContext context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryColor,
-            ),
-          ),
-          Spacing.vSpace(10.h),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: TextField(
-              controller: controller,
-              readOnly: readOnly,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: readOnly ? Colors.grey : Colors.black87,
-              ),
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: Icon(
-                  icon,
-                  color: AppColors.primaryColor.withOpacity(.7),
-                  size: 22.sp,
-                ),
-                suffixIcon: suffixIcon,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: readOnly ? Colors.grey[50] : Colors.white,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 16.h,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-  }
-  
-  class _ImageSourceOption extends StatelessWidget {
-    final IconData icon;
-    final String label;
-    final VoidCallback onTap;
-  
-    const _ImageSourceOption({
-      required this.icon,
-      required this.label,
-      required this.onTap,
-    });
-  
-    @override
-    Widget build(BuildContext context) {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor.withOpacity(.1),
-            borderRadius: BorderRadius.circular(15.r),
-            border: Border.all(color: AppColors.primaryColor.withOpacity(.2)),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, size: 40.sp, color: AppColors.primaryColor),
-              Spacing.vSpace(8.h),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primaryColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-  }

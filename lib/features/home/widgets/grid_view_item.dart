@@ -1,14 +1,15 @@
 import 'dart:ui';
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
+import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CardItem extends StatelessWidget {
-  const CardItem({super.key});
-
+  const CardItem({super.key, required this.product});
+final ProductModel product;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -54,8 +55,8 @@ class CardItem extends StatelessWidget {
                       ),
                     ),
                     Center(
-                      child: Image.asset(
-                        'assets/pnga/d3.png',
+                      child: Image.network(
+                        product.url,
                         width: 115.w,
                         height: 115.h,
                       ),
@@ -68,7 +69,7 @@ class CardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'caapuccino',
+                        product.name,
                         style: TextStyle(
                           color:AppColors.primaryColor,
                           fontSize: 16.sp,
@@ -88,7 +89,7 @@ class CardItem extends StatelessWidget {
                         children: [
                           Spacing.hSpace(1.w),
                           Text(
-                            '\$ 2.50',
+                           product.price,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13.sp,
@@ -103,7 +104,8 @@ class CardItem extends StatelessWidget {
                                 'assets/svgs/rait.svg',width: 16.w,height: 16.h,
                               ),
                               Spacing.hSpace(2.w),
-                              Text('9.5')
+                              Text(
+                           product.rate)
                             ],
                           ),
                         ],

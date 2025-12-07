@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefHelpers {
   static const String _keyOnboardingSeen = 'onboarding_seen';
+  static const String _logIn = 'LogIn';
   static const String _token = 'token';
 
   final SharedPreferences _prefs;
@@ -12,11 +13,17 @@ class PrefHelpers {
   Future<void> setOnboardingSeen() async {
     await _prefs.setBool(_keyOnboardingSeen, true);
   }
+ 
 
   bool isOnboardingSeen() {
     return _prefs.getBool(_keyOnboardingSeen) ?? false;
   }
-
+ Future<void> saveLogin() async {
+    await _prefs.setBool(_logIn, true);
+  }
+    bool isLogin() {
+    return _prefs.getBool(_logIn) ?? false;
+  }
   Future<void> saveToken(String token) async {
     await _prefs.setString(_token, token);
   }

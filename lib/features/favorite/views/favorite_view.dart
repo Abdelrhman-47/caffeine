@@ -2,6 +2,7 @@ import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/features/favorite/widgets/ex_offer.dart';
 import 'package:caffeine/features/favorite/widgets/information_row.dart';
+import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:caffeine/features/home/widgets/grid_view_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,7 @@ class FavoritesView extends StatelessWidget {
                         return SizedBox(width: 160.w,
                           child: Padding(
                             padding:  EdgeInsets.symmetric(horizontal: 12.w),
-                            child: const CardItem(),
+                            child:  CardItem(product: ProductModel(name: 'dd',price: '',rate: '',url: '',category: 2,id: 2)),
                           ));
                       },
                                        ),

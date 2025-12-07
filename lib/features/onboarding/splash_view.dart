@@ -23,9 +23,12 @@ class _SplashViewState extends State<SplashView> {
   void navigation() {
     Future.delayed(Duration(milliseconds: 3400)).then((_) async {
 
-      if (_prefsHelper.isOnboardingSeen()) {
+      if (_prefsHelper.isOnboardingSeen()&&_prefsHelper.isLogin()) {
+        context.pushNamed(AppRoutes.homeLayout);
+      } else if (_prefsHelper.isOnboardingSeen()) {
         context.pushNamed(AppRoutes.login);
-      } else {
+      }
+      else {
         context.goNamed(AppRoutes.onboarding);
       }
     });

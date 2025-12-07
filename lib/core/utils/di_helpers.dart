@@ -4,6 +4,8 @@ import 'package:caffeine/core/network/api_services.dart';
 import 'package:caffeine/core/network/dio_clint.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/data/repo.dart';
+import 'package:caffeine/features/home/cubit/product_cubit.dart';
+import 'package:caffeine/features/home/data/product_repo.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
 import 'package:caffeine/features/profile/data/user_repo.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +18,11 @@ Future<void> setupDependencies() async {
   await Supabase.initialize(
     url: 'https://gaogtmhoavbrmblbbfwi.supabase.co',
     anonKey: AppConstats.annoneKey,
+    authOptions: const FlutterAuthClientOptions(
+      autoRefreshToken: true,
+
+      
+    )
   );
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
@@ -27,7 +34,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<ApiServices>(
     () => ApiServices(dioClient: getIt<DioClient>()),
   );
-  
 
   getIt.registerLazySingleton<UserRepo>(
     () => UserRepoImplement(
@@ -38,8 +44,16 @@ Future<void> setupDependencies() async {
   );
   getIt.registerFactory<AuthCubit>(() => AuthCubit(user: getIt<UserRepo>()));
 
-
-  getIt.registerLazySingleton<UserDataRepositoryImpl >(()=> UserDataRepositoryImpl (apiServices: getIt<ApiServices>()));
-    getIt.registerFactory<UserDataCubit>(() => UserDataCubit(userRepository: getIt<UserDataRepositoryImpl >()));
-
+  getIt.registerLazySingleton<UserDataRepositoryImpl>(
+    () => UserDataRepositoryImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory<UserDataCubit>(
+    () => UserDataCubit(userRepository: getIt<UserDataRepositoryImpl>()),
+  );
+  getIt.registerLazySingleton<ProductRepoImpl>(
+    () => ProductRepoImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory<ProductCubit>(
+    () => ProductCubit(productRepo: getIt<ProductRepoImpl>()),
+  );
 }

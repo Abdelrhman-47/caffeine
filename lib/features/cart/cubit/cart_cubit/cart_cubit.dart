@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:caffeine/features/cart/cubit/cart_cubit/cart_state.dart';
+import 'package:caffeine/features/cart/data/cart_model.dart';
 import 'package:caffeine/features/cart/data/cart_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,4 +49,15 @@ class CartCubit extends Cubit<CartState> {
       emit(CartError(e.toString()));
     }
   }
+  double calculateTotal(
+  List<CartModel> cartItems,
+  Map<int, int> productCounts,
+) {
+  return cartItems.fold<double>(
+    0,
+    (sum, item) =>
+        sum + (item.realPrice * (productCounts[item.product.id] ?? 1)),
+  );
+}
+
 }

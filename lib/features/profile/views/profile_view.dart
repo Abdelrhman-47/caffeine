@@ -2,6 +2,8 @@ import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/features/home/widgets/glass_container.dart';
+import 'package:caffeine/features/order/cubit/order_cubit.dart';
+import 'package:caffeine/features/order/views/user_orders_view.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
 import 'package:caffeine/features/profile/views/edit_profile.dart';
 import 'package:caffeine/features/profile/widgets/menu_item.dart';
@@ -24,10 +26,11 @@ class _ProfileViewState extends State<ProfileView> {
     context.read<UserDataCubit>().fetchUserData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -118,7 +121,17 @@ class _ProfileViewState extends State<ProfileView> {
                 MenuItem(
                   icon: Icons.receipt_long_outlined,
                   title: 'Order History',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (_) => getIt<OrderCubit>(),
+                          child: const UserOrdersView(),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 MenuItem(
                   icon: Icons.payment_outlined,
@@ -184,4 +197,3 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 }
-

@@ -5,7 +5,7 @@ class CartModel {
   final DateTime createdAt;
   final int productId;
   final double realPrice;
-  final String userId;
+  final String userId;  
   final ProductModel product;
 
   CartModel({

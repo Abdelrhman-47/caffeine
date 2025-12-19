@@ -6,7 +6,6 @@ import 'package:caffeine/features/auth/register/view/register_view.dart';
 import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
 import 'package:caffeine/features/details/cubit/real_price_cubit.dart';
 import 'package:caffeine/features/details/view/details_view.dart';
-import 'package:caffeine/features/cart/views/cart_view.dart';
 import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:caffeine/features/home_layout/cubit/nav_bar_cubit.dart';
 import 'package:caffeine/features/home_layout/views/home_layout_view.dart';
@@ -80,8 +79,11 @@ class AppRouter {
       GoRoute(
         name: AppRoutes.order,
         path: AppRoutes.order,
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<OrderCubit>(),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt<OrderCubit>()),
+            BlocProvider(create: (context) => getIt<CartCubit>()),
+          ],
           child: const OrderView(),
         ),
       ),

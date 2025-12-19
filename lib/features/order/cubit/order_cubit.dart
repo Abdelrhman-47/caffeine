@@ -1,4 +1,3 @@
-import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
 import 'package:caffeine/features/order/cubit/order_state.dart';
 import 'package:caffeine/features/order/data/order_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,5 +38,22 @@ class OrderCubit extends Cubit<OrderState> {
     } catch (e) {
       emit(OrderError(e.toString()));
     }
+  }
+  Future<void> deleteall() async {
+    emit(OrderLoading());
+    try {
+      await _orderRepo.deleteall();
+      emit(OrderSuccess());
+    } catch (e) {
+      emit(OrderError(e.toString()));
+    }
+  }
+  double calculateTotalPrice(
+    List<dynamic> orders,
+  ) {
+    return orders.fold<double>(
+      0,
+      (sum, order) => sum + order.totalPrice,
+    );
   }
 }

@@ -12,6 +12,7 @@ abstract class OrderRepo {
     required double totalPrice,
   });
   Future<List<OrderModel>> getUserOrders();
+  Future<void>deleteall();
 }
 
 class OrderRepoImpl implements OrderRepo {
@@ -55,5 +56,17 @@ class OrderRepoImpl implements OrderRepo {
       log('error in getUserOrders $e');
       rethrow;
     }
+  }
+  
+  @override
+  Future<void> deleteall() {
+    try {
+      return _apiServices.delete(
+        'user_order?user_id=eq.${supabase.auth.currentUser!.id}',
+      );
+    } catch (e) {
+      log('error in deleteall $e');
+      rethrow;
+    }    
   }
 }

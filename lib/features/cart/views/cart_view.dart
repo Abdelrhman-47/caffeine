@@ -229,8 +229,16 @@ class _CartViewState extends State<CartView> {
                           }
                           // context.read<CartCubit>().deleteall();
                           context.push(AppRoutes.order);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => BlocProvider(
+                          //       create: (context) => getIt<OrderCubit>(),
+                          //       child: UserOrdersView(),
+                          //     ),
+                          //   ),
+                          // );
                         },
-                        textColor: Colors.white,
                         height: 50.h,
                         width: 160.w,
                         borderRadius: BorderRadius.circular(25.r),
@@ -241,6 +249,7 @@ class _CartViewState extends State<CartView> {
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
+                        textColor: Colors.white,
                       ),
                     ],
                   ),

@@ -2,13 +2,16 @@ import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart' show Spacing;
 import 'package:caffeine/core/routing/app_routes.dart';
 import 'package:caffeine/core/sheared_widgets/custom_button.dart';
+import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
 import 'package:caffeine/features/home/widgets/glass_container.dart';
+import 'package:caffeine/features/home_layout/views/home_layout_view.dart';
 import 'package:caffeine/features/order/cubit/order_cubit.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:caffeine/features/order/cubit/order_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class OrderView extends StatefulWidget {
   const OrderView({super.key});
@@ -21,6 +24,7 @@ class _OrderViewState extends State<OrderView> {
   late final List<Color> _gradientColors;
   @override
   void initState() {
+    context.read<OrderCubit>().getUserOrders();
     super.initState();
     _gradientColors = [
       AppColors.secondaryColor.withOpacity(.5),
@@ -54,10 +58,15 @@ class _OrderViewState extends State<OrderView> {
                     padding: EdgeInsets.symmetric(horizontal: 14.w),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.arrow_back,
-                          size: 25.sp,
-                          color: Colors.white,
+                        InkWell(
+                          onTap: () {
+                            context.go(AppRoutes.homeLayout);
+                          },
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 25.sp,
+                            color: Colors.white,
+                          ),
                         ),
                         Spacing.hSpace(88.w),
                         Text(
@@ -73,119 +82,137 @@ class _OrderViewState extends State<OrderView> {
                   ),
                   Spacing.vSpace(30.h),
                   Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 14.w,
-                        vertical: 12.h,
-                      ),
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 16.h),
-                          child: SizedBox(
-                            height: 110.h,
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: DarkGlassContainer(height: 100.h),
-                                ),
-                                Positioned(
-                                  left: 10.w,
-                                  top: -10.h,
-                                  bottom: -10.h,
-                                  child: Image.asset(
-                                    'assets/pnga/d3.png',
-                                    width: 120.w,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 120.w,
-                                  top: 5.h,
-                                  bottom: 0,
-                                  child: Row(
+                    child: BlocBuilder<OrderCubit, OrderState>(
+                      builder: (context, state) {
+                        if (state is OrderLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is OrderError) {
+                          return Center(child: Text('Error: ${state.message}'));
+                        } else if (state is OrderLoaded) {
+                          if (state.orders.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'No orders found',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }
+                          return ListView.builder(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14.w,
+                              vertical: 12.h,
+                            ),
+                            itemCount: state.orders.length,
+                            itemBuilder: (context, index) {
+                              final order = state.orders[index];
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 16.h),
+                                child: SizedBox(
+                                  height: 120.h,
+                                  child: Stack(
                                     children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Spacing.vSpace(7.h),
-                                      
-                                          Text(
-                                            'MilkShake',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Spacing.vSpace(7.h),
-                                          Text(
-                                            'count          ',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Spacing.vSpace(3.h),
-                                      
-                                          Text(
-                                            'Total Price',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                      
-                                          SizedBox(height: 1.h),
-                                         
-                                        ],
+                                      Positioned.fill(
+                                        child: DarkGlassContainer(
+                                          height: 100.h,
+                                        ),
                                       ),
-                                       Spacing.hSpace(70.w), Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Spacing.vSpace(7.h),
-                                      
-                                          Text(
-                                            '',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                      // Product Image
+                                      Positioned(
+                                        left: 10.w,
+                                        top: -10.h,
+                                        bottom: -10.h,
+                                        child: order.product.url.isNotEmpty
+                                            ? Image.network(
+                                                order.product.url,
+                                                width: 120.w,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) => Icon(
+                                                      Icons.image_not_supported,
+                                                      color: Colors.white,
+                                                      size: 50.sp,
+                                                    ),
+                                              )
+                                            : Icon(
+                                                Icons.image,
+                                                color: Colors.white,
+                                                size: 50.sp,
+                                              ),
+                                      ),
+                                      // Details
+                                      Positioned(
+                                        left: 130.w,
+                                        top: 10.h,
+                                        right: 10.w,
+                                        bottom: 10.h,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              order.product.name,
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                          Spacing.vSpace(7.h),
-                                          Text(
-                                            '10',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                            Spacing.vSpace(5.h),
+                                            Text(
+                                              'Date: ${DateFormat('MMM d, yyyy').format(order.createdAt)}',
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                color: Colors.white70,
+                                              ),
                                             ),
-                                          ),
-                                          Spacing.vSpace(6.h),
-                                      
-                                          Text(
-                                            '70 \$',
-                                            style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                            Spacing.vSpace(5.h),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Count: ${order.count}',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '\$${order.totalPrice.toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                      
-                                          SizedBox(height: 1.h),
-                                         
-                                        ],)
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                          
-                              ],
-                            ),
+                              );
+                            },
+                          );
+                        }
+                        return Center(
+                          child: Text(
+                            'good luck',
+                            style: TextStyle(color: Colors.black),
                           ),
                         );
                       },
@@ -194,130 +221,168 @@ class _OrderViewState extends State<OrderView> {
                 ],
               ),
             ),
-               Positioned(right: 0,left: 0,bottom: 0,
-                              child: DarkGlassContainer(
-  height: 200.h,
-  width: double.infinity,
-  borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(50.r),
-    topRight: Radius.circular(50.r),
-  ),
-  child: Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Pricing breakdown rows
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Original Price',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white70,
+            Positioned(
+              right: 0,
+              left: 0,
+              bottom: 0,
+              child: DarkGlassContainer(
+                height: 200.h,
+                width: double.infinity,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50.r),
+                  topRight: Radius.circular(50.r),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 15.h,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Pricing breakdown rows
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Original Price',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              BlocBuilder<OrderCubit, OrderState>(
+                                builder: (context, state) {
+                                  if (state is OrderLoaded) {
+                                    List<dynamic> orders = state.orders;
+                                    return Text(
+                                      '\$ ${context.read<OrderCubit>().calculateTotalPrice(orders).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontSize: 13.sp,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  }
+                                  return Text(
+                                    '\$ 0.00',
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Use Coupon',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              Text(
+                                '\$ 0.20',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 6.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Fee',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              Text(
+                                '\$ 0.04',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Divider(
+                            color: Colors.white.withOpacity(0.3),
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Total',
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              BlocBuilder<OrderCubit, OrderState>(
+                                builder: (context, state) {
+                                  if (state is OrderLoaded) {
+                                    List<dynamic> orders = state.orders;
+                                    return Text(
+                                      '\$ ${context.read<OrderCubit>().calculateTotalPrice(orders) - 0.20}',
+                                      style: TextStyle(
+                                        fontSize: 13.sp,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  }
+                                  return Text(
+                                    '\$ 0.00',
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      CustomButton(
+                        text: 'Confirm',
+                        onPressed: () {
+                          context.read<CartCubit>().deleteall();
+                          context.read<OrderCubit>().deleteall();
+                        },
+                        textColor: Colors.white,
+                        height: 45.h,
+                        width: 120.w,
+                        borderRadius: BorderRadius.circular(25.r),
+                        outLineButton: false,
+                        backgroundColor: AppColors.primaryColor,
+                        textStyle: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  '\$ 41.98',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Use Coupon',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white70,
-                  ),
-                ),
-                Text(
-                  '\$ 0.20',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Fee',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white70,
-                  ),
-                ),
-                Text(
-                  '\$ 0.04',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            Divider(color: Colors.white.withOpacity(0.3), thickness: 1),
-            SizedBox(height: 8.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  '\$ 41.82',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
-        ),
-        
-        CustomButton(
-        
-          text: 'Confirm',
-          onPressed: () {
-            // context.read<OrderCubit>().placeOrder(count: count, itemPrice: itemPrice, tableNumber: tableNumber, productId: productId);
-          },
-          textColor: Colors.white,
-          height: 45.h,
-          width: 120.w,
-          borderRadius: BorderRadius.circular(25.r),
-          outLineButton: false,
-          backgroundColor: AppColors.primaryColor,
-          textStyle: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  ),))
-],
         ),
       ),
     );

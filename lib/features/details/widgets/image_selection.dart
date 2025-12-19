@@ -43,7 +43,7 @@ class ProductImageSection extends StatelessWidget {
             height: 300.h,
             child: Transform.scale(
               scale: scale,
-              child: Image.asset(
+              child: Image.network(
                 imagePath,
                 fit: BoxFit.contain,
                 

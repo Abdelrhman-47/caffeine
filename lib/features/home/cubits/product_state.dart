@@ -9,7 +9,10 @@ abstract class ProductState extends Equatable {
 }
 
 final class ProductInitial extends ProductState {}
-final class ProductLoading extends ProductState {}final class ProductSuccess extends ProductState {
+
+final class ProductLoading extends ProductState {}
+
+final class ProductSuccess extends ProductState {
   final List<ProductModel> products;
 
   const ProductSuccess(this.products);

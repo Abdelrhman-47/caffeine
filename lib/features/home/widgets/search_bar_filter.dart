@@ -1,5 +1,5 @@
 import 'package:caffeine/core/constants/app_colors.dart';
-import 'package:caffeine/features/home/cubit/product_cubit.dart';
+import 'package:caffeine/features/home/cubits/product_cubit.dart';
 import 'package:caffeine/features/home/widgets/custom_search_feaild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +17,7 @@ class SearchBarFilter extends StatelessWidget {
           child: DarkGlassSearchBar(
             height: 44.h,
             onChanged: (value) =>
-             value.isNotEmpty? context.read<ProductCubit>().ProductsBySearch(value) : context.read<ProductCubit>().getAllProducts(),
+             value.isEmpty? context.read<ProductCubit>().getAllProducts() :context.read<ProductCubit>().ProductsBySearch(value)  ,
           ),
         ),
         Padding(

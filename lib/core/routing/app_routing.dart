@@ -3,13 +3,16 @@ import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/login/view/login_view.dart';
 import 'package:caffeine/features/auth/register/view/register_view.dart';
+import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
+import 'package:caffeine/features/details/cubit/real_price_cubit.dart';
 import 'package:caffeine/features/details/view/details_view.dart';
 import 'package:caffeine/features/cart/views/cart_view.dart';
-import 'package:caffeine/features/favorite/views/favorite_view.dart';
+import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:caffeine/features/home_layout/cubit/nav_bar_cubit.dart';
 import 'package:caffeine/features/home_layout/views/home_layout_view.dart';
 import 'package:caffeine/features/onboarding/views/onboarding_view.dart';
 import 'package:caffeine/features/onboarding/splash_view.dart';
+import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:caffeine/features/order/views/order_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,22 +59,31 @@ class AppRouter {
       GoRoute(
         name: AppRoutes.details,
         path: AppRoutes.details,
-        builder: (context, state) => const DetailsView(),
+        builder: (context, state) {
+          final product = state.extra as ProductModel;
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => getIt<RealPriceCubit>()),
+              BlocProvider(create: (context) => getIt<CartCubit>()),
+            ],
+            child: DetailsView(product: product),
+          );
+        },
       ),
-      GoRoute(
-        name: AppRoutes.cart,
-        path: AppRoutes.cart,
-        builder: (context, state) => const CartView(),
-      ),
-      GoRoute(
-        name: AppRoutes.favorites,
-        path: AppRoutes.favorites,
-        builder: (context, state) => const FavoritesView(),
-      ),
+
+      // GoRoute(
+      //   name: AppRoutes.favorites,
+      //   path: AppRoutes.favorites,
+      //   builder: (context, state) => const FavoritesView(),
+      // ),
       GoRoute(
         name: AppRoutes.order,
         path: AppRoutes.order,
-        builder: (context, state) => const OrderView(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<OrderCubit>(),
+          child: const OrderView(),
+        ),
       ),
     ],
     errorBuilder: (context, state) =>

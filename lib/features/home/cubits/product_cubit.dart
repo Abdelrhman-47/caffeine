@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:caffeine/features/home/cubit/product_state.dart';
+import 'package:caffeine/features/home/cubits/product_state.dart';
 import 'package:caffeine/features/home/data/product_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +17,7 @@ class ProductCubit extends Cubit<ProductState> {
     result.fold((l)=>emit(ProductFailure(l)), (r)=>emit(ProductSuccess(r)));
 
   }
+
   Future<void> ProductsByCategory(int categoryId) async {
     emit(ProductLoading());
     final result = await _productRepo.productByCategory(categoryId);

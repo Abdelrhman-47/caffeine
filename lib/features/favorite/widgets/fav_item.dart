@@ -2,42 +2,17 @@ import 'dart:ui';
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/features/favorite/cubit/fav_cubit.dart';
-import 'package:caffeine/features/favorite/cubit/fav_state.dart';
-import 'package:caffeine/features/home/data/product_model.dart';
+import 'package:caffeine/features/favorite/data/fav_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class CardItem extends StatefulWidget {
-  CardItem({super.key, required this.product, required this.isFave});
-
-  final ProductModel product;
+class FavItem extends StatelessWidget {
+  const FavItem({super.key, required this.fav, required this.isFave});
+  final ProductsModel fav;
   final bool isFave;
-
-  @override
-  State<CardItem> createState() => _CardItemState();
-}
-
-class _CardItemState extends State<CardItem> {
-  late bool _localIsFave;
-
-  @override
-  void initState() {
-    super.initState();
-    _localIsFave = widget.isFave;
-  }
-
-  @override
-  void didUpdateWidget(covariant CardItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // sync with external fav state updates
-    if (oldWidget.isFave != widget.isFave) {
-      _localIsFave = widget.isFave;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -61,27 +36,16 @@ class _CardItemState extends State<CardItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // use local flag for immediate feedback, persist via cubit
                 InkWell(
                   onTap: () {
-                    setState(() {
-                      _localIsFave = !_localIsFave;
-                    });
-                    if (_localIsFave) {
-                      context.read<FavCubit>().addFavProduct(widget.product.id);
-                    } else {
-                      context.read<FavCubit>().deletFavProduct(
-                        widget.product.id,
-                      );
+                    if (isFave != null) {
+                      context.read<FavCubit>().deletFavProduct(fav.id);
                     }
                   },
                   child: SvgPicture.asset(
-                    _localIsFave
-                        ? 'assets/svgs/fav.svg'
-                        : 'assets/svgs/no_fav.svg',
+                    'assets/svgs/fav.svg',
                     width: 10.w,
                     height: 16.h,
-                    color: _localIsFave ? Colors.red : Colors.white,
                   ),
                 ),
                 Stack(
@@ -100,7 +64,7 @@ class _CardItemState extends State<CardItem> {
                     ),
                     Center(
                       child: Image.network(
-                        widget.product.url,
+                        fav.url,
                         width: 115.w,
                         height: 115.h,
                       ),
@@ -113,7 +77,7 @@ class _CardItemState extends State<CardItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.product.name,
+                        fav.name,
                         style: TextStyle(
                           color: AppColors.primaryColor,
                           fontSize: 16.sp,
@@ -133,14 +97,15 @@ class _CardItemState extends State<CardItem> {
                       Row(
                         children: [
                           Spacing.hSpace(1.w),
-                          Text('\$ ${ widget.product.price.toStringAsFixed(1)}',
-                          
+                          Text(
+                            fav.price.toStringAsFixed(2),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           Spacer(),
                           Row(
                             children: [
@@ -150,7 +115,7 @@ class _CardItemState extends State<CardItem> {
                                 height: 16.h,
                               ),
                               Spacing.hSpace(2.w),
-                              Text(widget.product.rate),
+                              Text(fav.rate),
                             ],
                           ),
                         ],

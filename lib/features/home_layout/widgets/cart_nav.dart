@@ -62,13 +62,13 @@ class CartNav extends StatelessWidget {
                                 Spacing.hSpace(15.w),
                               ],
                             ),
-                            Text(
-                              'Total price\n\$2.50',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.white,
-                              ),
-                            ),
+                            // Text(
+                            //   'Total price\n\$2.50',
+                            //   style: TextStyle(
+                            //     fontSize: 13.sp,
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
                           ],
                         ),
                       );

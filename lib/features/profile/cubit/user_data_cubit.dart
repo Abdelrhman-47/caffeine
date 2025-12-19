@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:caffeine/core/helpers/pref_helpers.dart';
+import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/features/profile/cubit/user_data_state.dart';
 import 'package:caffeine/features/profile/data/user_data.dart';
 import 'package:caffeine/features/profile/data/user_repo.dart';
@@ -6,11 +10,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserDataCubit extends Cubit<UserDataState> {
-  UserDataCubit({required UserDataRepository userRepository})
+  UserDataCubit({required UserDataRepository userRepository,required PrefHelpers pref})
       : _userRepository = userRepository,
+       _pref = pref,
+      
+
         super(const UserDataInitial());
 
   final UserDataRepository _userRepository;
+  final PrefHelpers _pref;
   final ImagePicker _imagePicker = ImagePicker();
   
   UserData? _cachedUserData;
@@ -18,6 +26,7 @@ class UserDataCubit extends Cubit<UserDataState> {
     emit(const UserDataLoading());
     
     final result = await _userRepository.getUserData();
+    log(getIt<PrefHelpers>().getToken());
     
     result.fold(
       (error) => emit(UserDataFailure(message: error)),

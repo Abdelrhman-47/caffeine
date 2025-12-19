@@ -3,8 +3,10 @@ import 'package:caffeine/core/helpers/spacing.dart' show Spacing;
 import 'package:caffeine/core/routing/app_routes.dart';
 import 'package:caffeine/core/sheared_widgets/custom_button.dart';
 import 'package:caffeine/features/home/widgets/glass_container.dart';
+import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -294,11 +296,11 @@ class _OrderViewState extends State<OrderView> {
           ],
         ),
         
-        // Action buttons row
         CustomButton(
+        
           text: 'Confirm',
           onPressed: () {
-            context.pushNamed(AppRoutes.order);
+            // context.read<OrderCubit>().placeOrder(count: count, itemPrice: itemPrice, tableNumber: tableNumber, productId: productId);
           },
           textColor: Colors.white,
           height: 45.h,

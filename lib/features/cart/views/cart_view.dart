@@ -1,8 +1,17 @@
 import 'package:caffeine/core/constants/app_colors.dart';
-import 'package:caffeine/core/helpers/spacing.dart';
-import 'package:caffeine/features/home/widgets/glass_container.dart';
+import 'package:caffeine/core/sheared_widgets/custom_button.dart';
+import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
+import 'package:caffeine/features/cart/cubit/cart_cubit/cart_state.dart';
+import 'package:caffeine/features/cart/cubit/counter_cubit/counter_cubit.dart';
+import 'package:caffeine/features/cart/data/cart_model.dart';
+import 'package:caffeine/features/cart/views/widgets/cart_view_item.dart';
+import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:caffeine/core/routing/app_routes.dart';
+import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -27,6 +36,10 @@ class _CartViewState extends State<CartView> {
       Colors.white.withOpacity(.4),
       Colors.white.withOpacity(.3),
     ];
+    // Fetch cart items from API when view is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CartCubit>().getCartItems();
+    });
   }
 
   @override
@@ -56,162 +69,182 @@ class _CartViewState extends State<CartView> {
                     child: AnimatedBuilder(
                       animation: controller,
                       builder: (context, child) {
-                        return ListView.builder(
-                          controller: controller,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 14.w,
-                            vertical: 12.h,
-                          ),
-                          itemCount: 20,
-                          itemBuilder: (context, index) {
-                            double offset = 0;
-                            if (controller.hasClients) {
-                              offset = controller.offset / 130 - index;
+                        return BlocBuilder<CartCubit, CartState>(
+                          builder: (context, state) {
+                            if (state is CartLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
                             }
-                            offset = offset.clamp(0, 1);
+                            if (state is CartError) {
+                              return Center(child: Text(state.message));
+                            }
+                            if (state is CartLoaded) {
+                              final List<CartModel> cartModel = state.cartItems;
 
-                            return Transform.scale(
-                              scale: 1 - (offset * 0.1),
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 16.h),
-                                child: SizedBox(
-                                  height: 150.h,
-                                  child: Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: DarkGlassContainer(
-                                          height: 150.h,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 10.w,
-                                        top: -10.h,
-                                        bottom: -10.h,
-                                        child: Image.asset(
-                                          'assets/pnga/d3.png',
-                                          width: 120.w,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 20.w,
-                                        top: 0,
-                                        bottom: 0,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              'MilkShake',
-                                              style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black87,
-                                              ),
-                                            ),
-                                            SizedBox(height: 13.h),
-                                            Row(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {},
-                                                  child: GlassContainer(
-                                                    height: 30.h,
-                                                    width: 30.w,
-                                                    padding: EdgeInsets.all(
-                                                      1.r,
-                                                    ),
-                                                    blur: 1,
-                                                    color: AppColors
-                                                        .primaryColor
-                                                        .withOpacity(.4),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10.r,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: AppColors
-                                                          .primaryColor,
-                                                      width: 1.5,
-                                                    ),
-                                                    child: Icon(Icons.add),
-                                                  ),
-                                                ),
-                                                Spacing.hSpace(6.w),
-                                                Text(
-                                                  '30',
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                  ),
-                                                ),
-                                                Spacing.hSpace(6.w),
-                                                GestureDetector(
-                                                  onTap: () {},
-                                                  child: GlassContainer(
-                                                    height: 30.h,
-                                                    width: 30.w,
-                                                    padding: EdgeInsets.all(
-                                                      1.r,
-                                                    ),
-                                                    blur: 1,
-                                                    color: AppColors
-                                                        .primaryColor
-                                                        .withOpacity(.4),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10.r,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: AppColors
-                                                          .primaryColor,
-                                                      width: 1.5,
-                                                    ),
-                                                    child: Icon(Icons.add),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            SizedBox(height: 12.h),
-                                            GestureDetector(
-                                              onTap: () {},
-                                              child: GlassContainer(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 16.w,
-                                                  vertical: 6.h,
-                                                ),
-                                                blur: 1,
-                                                color: AppColors.primaryColor
-                                                    .withOpacity(.4),
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                                border: Border.all(
-                                                  color: AppColors.primaryColor,
-                                                  width: 1.5,
-                                                ),
-                                                child: Text(
-                                                  'Remove',
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              return ListView.builder(
+                                controller: controller,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 14.w,
+                                  vertical: 12.h,
                                 ),
-                              ),
-                            );
+                                itemCount: cartModel.length,
+                                itemBuilder: (context, index) {
+                                  final realPrice = cartModel[index].realPrice;
+                                  final product = cartModel[index].product;
+
+                                  double offset = 0;
+                                  if (controller.hasClients) {
+                                    offset = controller.offset / 130 - index;
+                                  }
+                                  offset = offset.clamp(0, 1);
+
+                                  return Dismissible(
+                                    key: ValueKey(index),
+                                    direction: DismissDirection.horizontal,
+                                    background: Container(
+                                      color: Colors.red,
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    secondaryBackground: Container(
+                                      color: Colors.red,
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.only(right: 20),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    onDismissed: (direction) {
+                                      context.read<CartCubit>().delete(
+                                        cartModel[index].id,
+                                      );
+                                    },
+                                    child: Transform.scale(
+                                      scale: 1 - (offset * 0.1),
+                                      child: CartViewItem(
+                                        realPrice: realPrice,
+                                        productData: product,
+                                        productId: product.id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            return Center(child: Text('null'));
                           },
                         );
                       },
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              left: 0,
+              bottom: 0,
+              child: DarkGlassContainer(
+                height: 170.h,
+                width: double.infinity,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.r),
+                  topRight: Radius.circular(30.r),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 30.h,
+                    left: 20.w,
+                    right: 20.w,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Total Price',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          BlocBuilder<CartCubit, CartState>(
+                            builder: (context, state) {
+                              // if (state is CartLoaded) {
+                              if (state is CartLoaded &&
+                                  state.cartItems.isNotEmpty) {
+                                final total = state.cartItems.fold<double>(
+                                  0,
+                                  (sum, item) =>
+                                      sum +
+                                      item.realPrice *
+                                          context
+                                              .watch<CounterCubit>()
+                                              .getCount(item.product.id),
+                                );
+                                return Text(
+                                  '\$ ${total.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ],
+                      ),
+                      CustomButton(
+                        text: 'Confirm Order',
+                        onPressed: () {
+                          if (context.read<CartCubit>().state is CartLoaded) {
+                            final cartItems =
+                                (context.read<CartCubit>().state as CartLoaded)
+                                    .cartItems;
+                            for (var item in cartItems) {
+                              final count = context
+                                  .read<CounterCubit>()
+                                  .getCount(item.product.id);
+                              if (count > 0) {
+                                context.read<OrderCubit>().placeOrder(
+                                  count: count,
+                                  itemPrice: item.realPrice,
+                                  productId: item.product.id,
+                                  totalPrice: item.realPrice * count,
+                                );
+                              }
+                            }
+                          }
+                          // context.read<CartCubit>().deleteall();
+                          context.push(AppRoutes.order);
+                        },
+                        textColor: Colors.white,
+                        height: 50.h,
+                        width: 160.w,
+                        borderRadius: BorderRadius.circular(25.r),
+                        outLineButton: false,
+                        backgroundColor: AppColors.primaryColor,
+                        textStyle: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],

@@ -5,8 +5,8 @@ class ApiServices {
 
   ApiServices({required DioClient dioClient}) : _dioClient = dioClient;
     
-    Future<dynamic> get(String endPoint)async{
-   final response=   await _dioClient.dio.get(endPoint);
+    Future<dynamic> get(String endPoint,{Map<String, dynamic>? queryParameters})async{
+   final response=   await _dioClient.dio.get(endPoint,queryParameters: queryParameters);
    return response.data;
     }
     Future <dynamic> post(String endPoint,Map<String, dynamic> body)async{
@@ -15,6 +15,10 @@ class ApiServices {
     }
     Future <dynamic> patch(String endPoint,Map<String, dynamic> body)async{
       final response =await _dioClient.dio.patch(endPoint,data: body);
+      return response.data;
+    }
+    Future <dynamic> delete(String endPoint)async{
+      final response =await _dioClient.dio.delete(endPoint,);
       return response.data;
     }
     

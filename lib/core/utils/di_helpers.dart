@@ -4,8 +4,17 @@ import 'package:caffeine/core/network/api_services.dart';
 import 'package:caffeine/core/network/dio_clint.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/data/repo.dart';
-import 'package:caffeine/features/home/cubit/product_cubit.dart';
+import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
+import 'package:caffeine/features/cart/data/cart_repo.dart';
+import 'package:caffeine/features/details/cubit/real_price_cubit.dart';
+import 'package:caffeine/features/details/data/details_repo.dart';
+import 'package:caffeine/features/favorite/cubit/fav_cubit.dart';
+import 'package:caffeine/features/favorite/data/fav_repo.dart';
+import 'package:caffeine/features/home/cubits/offers_cubit/offers_cubit.dart';
+import 'package:caffeine/features/home/cubits/product_cubit.dart';
 import 'package:caffeine/features/home/data/product_repo.dart';
+import 'package:caffeine/features/order/cubit/order_cubit.dart';
+import 'package:caffeine/features/order/data/order_repo.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
 import 'package:caffeine/features/profile/data/user_repo.dart';
 import 'package:get_it/get_it.dart';
@@ -18,11 +27,7 @@ Future<void> setupDependencies() async {
   await Supabase.initialize(
     url: 'https://gaogtmhoavbrmblbbfwi.supabase.co',
     anonKey: AppConstats.annoneKey,
-    authOptions: const FlutterAuthClientOptions(
-      autoRefreshToken: true,
-
-      
-    )
+    authOptions: const FlutterAuthClientOptions(autoRefreshToken: true),
   );
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
@@ -42,18 +47,46 @@ Future<void> setupDependencies() async {
       apiServices: getIt<ApiServices>(),
     ),
   );
+  getIt.registerLazySingleton<FavRepo>(
+    () => FavRepoImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory<FavCubit>(() => FavCubit(favRepo: getIt<FavRepo>()));
+
   getIt.registerFactory<AuthCubit>(() => AuthCubit(user: getIt<UserRepo>()));
 
   getIt.registerLazySingleton<UserDataRepositoryImpl>(
     () => UserDataRepositoryImpl(apiServices: getIt<ApiServices>()),
   );
   getIt.registerFactory<UserDataCubit>(
-    () => UserDataCubit(userRepository: getIt<UserDataRepositoryImpl>()),
+    () => UserDataCubit(
+      userRepository: getIt<UserDataRepositoryImpl>(),
+      pref: getIt<PrefHelpers>(),
+    ),
   );
-  getIt.registerLazySingleton<ProductRepoImpl>(
+  getIt.registerLazySingleton<ProductRepo>(
     () => ProductRepoImpl(apiServices: getIt<ApiServices>()),
   );
+
   getIt.registerFactory<ProductCubit>(
-    () => ProductCubit(productRepo: getIt<ProductRepoImpl>()),
+    () => ProductCubit(productRepo: getIt<ProductRepo>()),
+  );
+  getIt.registerFactory<OffersCubit>(
+    () => OffersCubit(productRepo: getIt<ProductRepo>()),
+  );
+  getIt.registerLazySingleton<DetailsRepo>(
+    () => DetailsRepoImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory<RealPriceCubit>(
+    () => RealPriceCubit(detailsRepo: getIt<DetailsRepo>()),
+  );
+  getIt.registerLazySingleton<CartRepo>(
+    () => CartRepoImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory(() => CartCubit(cartRepo: getIt<CartRepo>()));
+  getIt.registerLazySingleton<OrderRepo>(
+    () => OrderRepoImpl(apiServices: getIt<ApiServices>()),
+  );
+  getIt.registerFactory<OrderCubit>(
+    () => OrderCubit(orderRepo: getIt<OrderRepo>()),
   );
 }

@@ -1,6 +1,6 @@
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
-import 'package:caffeine/features/home/cubit/product_cubit.dart';
+import 'package:caffeine/features/home/cubits/product_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

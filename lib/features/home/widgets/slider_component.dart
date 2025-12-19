@@ -1,13 +1,14 @@
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
+import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SliderComponent extends StatelessWidget {
-  const SliderComponent({super.key});
-
+  const SliderComponent({super.key, required this.offer});
+  final OfferModel offer;
   @override
   Widget build(BuildContext context) {
     return DarkGlassContainer(
@@ -22,11 +23,7 @@ class SliderComponent extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: 10.w),
-                  child: Image.asset(
-                    'assets/pnga/offerTest.png',
-                    width: 100.w,
-                    height: 100.h,
-                  ),
+                  child: Image.network(offer.url1, width: 100.w, height: 100.h),
                 ),
                 Spacing.hSpace(2.w),
                 Column(
@@ -35,7 +32,7 @@ class SliderComponent extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Cappuccino',
+                          offer.name,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16.sp,
@@ -48,7 +45,7 @@ class SliderComponent extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'buy 1 and get another 1 \n50% off',
+                        offer.des,
                         style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontSize: 10.sp,
@@ -70,7 +67,7 @@ class SliderComponent extends StatelessWidget {
                         ),
 
                         Text(
-                          ' 3.12',
+                          offer.price.toStringAsFixed(1),
                           style: TextStyle(
                             color: Colors.white.withOpacity(.9),
                             fontSize: 17.sp,

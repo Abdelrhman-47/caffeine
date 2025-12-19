@@ -15,8 +15,7 @@ void main() async{
 class Caffeine extends StatelessWidget {
   const Caffeine({super.key});
 
-  @override
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,

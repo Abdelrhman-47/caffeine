@@ -4,20 +4,23 @@ import 'package:caffeine/features/details/widgets/bottom_section.dart';
 import 'package:caffeine/features/details/widgets/header_section.dart';
 import 'package:caffeine/features/details/widgets/image_selection.dart';
 import 'package:caffeine/features/details/widgets/size_selector.dart';
+import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailsView extends StatefulWidget {
-  const DetailsView({super.key});
+  const DetailsView({super.key, required this.product});
+  final ProductModel product;
 
   @override
   State<DetailsView> createState() => _DetailsViewState();
 }
 
+
 class _DetailsViewState extends State<DetailsView> {
   int selectedSizeIndex = 1; // Default: Medium
 
-  static const List<String> sizes = ["Large", "Medium", "Small"];
+  static const List<String> sizes = ["large", "medium", "small"];
   static const List<double> sizeScale = [1.4, 1.2, 1];
 
   late final List<Color> _gradientColors;
@@ -39,7 +42,7 @@ class _DetailsViewState extends State<DetailsView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomSection(),
+        bottomNavigationBar: BottomSection(avragePrice: widget.product.price, productId: widget.product.id,),
         backgroundColor: Colors.white,
         body: Container(
           width: double.infinity,
@@ -61,7 +64,7 @@ class _DetailsViewState extends State<DetailsView> {
 
                 ProductImageSection(
                   scale: sizeScale[selectedSizeIndex],
-                  imagePath: 'assets/pnga/d3.png',
+                  imagePath: widget.product.url,
                 ),
 
                 Spacing.vSpace(90.h),
@@ -73,7 +76,7 @@ class _DetailsViewState extends State<DetailsView> {
                     setState(() {
                       selectedSizeIndex = index;
                     });
-                  },
+                  }, productInt: widget.product.id,
                 ),
               ],
             ),

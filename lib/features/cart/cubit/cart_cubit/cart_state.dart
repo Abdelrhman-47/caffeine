@@ -1,54 +1,36 @@
-
+// cart_state.dart
 import 'package:caffeine/features/cart/data/cart_model.dart';
 import 'package:equatable/equatable.dart';
 
-sealed class CartState extends Equatable {
-  const CartState();
-
-  @override
-  List<Object> get props => [];
-}
-
-final class CartInitial extends CartState {}
-final class CartLoading extends CartState {}
-final class CartError extends CartState{
-  final String message;
-
-  const CartError(this.message);
-  @override
-  List<Object> get props => [message];
-
-}
-final class CartLoaded extends CartState {
+class CartState extends Equatable {
   final List<CartModel> cartItems;
+  final bool isLoading;
+  final String? errorMessage;
+  final String? successMessage;
 
-  const CartLoaded(this.cartItems);
+  const CartState({
+    this.cartItems = const [],
+    this.isLoading = false,
+    this.errorMessage,
+    this.successMessage,
+  });
+
+  CartState copyWith({
+    List<CartModel>? cartItems,
+    bool? isLoading,
+    String? errorMessage,
+    String? successMessage,
+    bool clearError = false,
+    bool clearSuccess = false,
+  }) {
+    return CartState(
+      cartItems: cartItems ?? this.cartItems,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      successMessage: clearSuccess ? null : (successMessage ?? this.successMessage),
+    );
+  }
+
   @override
-  List<Object> get props => [cartItems];
-
+  List<Object?> get props => [cartItems, isLoading, errorMessage, successMessage];
 }
-final class CartItemAdded extends CartState {
-  final String message;
-
-  const CartItemAdded(this.message);
-  @override
-  List<Object> get props => [message];
-
-}
-final class CartItemDeleted extends CartState {
-  final String message;
-
-  const CartItemDeleted(this.message);
-  @override
-  List<Object> get props => [message];
-
-}
-final class CartDeleted extends CartState {
-  final String message;
-
-  const CartDeleted(this.message);
-  @override
-  List<Object> get props => [message];
-
-}
-

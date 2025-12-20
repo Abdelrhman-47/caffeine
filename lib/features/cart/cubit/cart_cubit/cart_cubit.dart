@@ -9,44 +9,44 @@ class CartCubit extends Cubit<CartState> {
   CartRepo _cartRepo;
   CartCubit({required CartRepo cartRepo})
     : _cartRepo = cartRepo,
-      super(CartInitial());
+      super(CartState());
   void addToCart(int productId, double price) async {
-    emit(CartLoading());
+    emit(CartState(isLoading: true));
     try {
       await _cartRepo.addToCart(productId, price);
-      emit(CartItemAdded('تم إضافة المنتج إلى السلة'));
+      emit(CartState(successMessage: 'تم إضافة المنتج إلى السلة'));
       // Refresh cart items after adding
       getCartItems();
     } catch (e) {
-      emit(CartError(e.toString()));
+      emit(CartState(errorMessage: e.toString()));
     }
   }
 
   void getCartItems() async {
-    emit(CartLoading());
+    emit(CartState(isLoading: true));
     final result = await _cartRepo.getCartItems();
     log(result.toString());
-    result.fold((l) => emit(CartError(l)), (r) => emit(CartLoaded(r)));
+    result.fold((l) => emit(CartState(errorMessage: l)), (r) => emit(CartState(cartItems: r)));
   }
 
   void delete(int cartId) async {
-    emit(CartLoading());
+    emit(CartState(isLoading: true));
     try {
       await _cartRepo.delete(cartId);
-      emit(CartItemDeleted('تم حذف المنتج من السلة'));
+      emit(CartState(successMessage: 'تم حذف المنتج من السلة'));
       getCartItems();
     } catch (e) {
-      emit(CartError(e.toString()));
+      emit(CartState(errorMessage: e.toString()));
     }
   }
   void deleteall() async {
-    emit(CartLoading());
+    emit(CartState(isLoading: true));
     try {
       await _cartRepo.deleteAll();
-      emit(CartDeleted('تم حذف جميع المنتجات من السلة'));
+      emit(CartState(successMessage: 'تم حذف جميع المنتجات من السلة'));
       getCartItems();
     } catch (e) {
-      emit(CartError(e.toString()));
+      emit(CartState(errorMessage: e.toString()));
     }
   }
   double calculateTotal(
@@ -59,5 +59,4 @@ class CartCubit extends Cubit<CartState> {
         sum + (item.realPrice * (productCounts[item.product.id] ?? 1)),
   );
 }
-
 }

@@ -63,7 +63,7 @@ class BottomSection extends StatelessWidget {
           Spacer(),
           BlocListener<CartCubit, CartState>(
             listener: (context, state) {
-              if (state is CartItemAdded) {
+              if (state.successMessage != null) {
                 Navigator.pop(context);
               }
             },

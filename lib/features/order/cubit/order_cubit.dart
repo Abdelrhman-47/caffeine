@@ -1,3 +1,4 @@
+import 'package:caffeine/features/cart/data/cart_model.dart';
 import 'package:caffeine/features/order/cubit/order_state.dart';
 import 'package:caffeine/features/order/data/order_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +40,7 @@ class OrderCubit extends Cubit<OrderState> {
       emit(OrderError(e.toString()));
     }
   }
+
   Future<void> deleteall() async {
     emit(OrderLoading());
     try {
@@ -48,12 +50,33 @@ class OrderCubit extends Cubit<OrderState> {
       emit(OrderError(e.toString()));
     }
   }
-  double calculateTotalPrice(
-    List<dynamic> orders,
-  ) {
-    return orders.fold<double>(
-      0,
-      (sum, order) => sum + order.totalPrice,
-    );
+
+  double calculateTotalPrice(List<dynamic> orders) {
+    return orders.fold<double>(0, (sum, order) => sum + order.totalPrice);
+  }
+
+  Future<void> confirmCartOrders({
+    required List<CartModel> cartItems,
+    required Map<int, int> productCounts,
+  }) async {
+    emit(OrderLoading());
+
+    try {
+      for (var item in cartItems) {
+        final count = productCounts[item.product.id] ?? 1;
+        if (count > 0) {
+          await placeOrder(
+            count: count,
+            itemPrice: item.realPrice,
+            productId: item.product.id,
+            totalPrice: item.realPrice * count,
+          );
+        }
+      }
+
+      emit(OrderSuccess());
+    } catch (e) {
+      emit(OrderError(e.toString()));
+    }
   }
 }

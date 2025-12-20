@@ -1,3 +1,4 @@
+import 'package:caffeine/features/cart/data/cart_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'counter_state.dart';
 
@@ -20,5 +21,11 @@ class CounterCubit extends Cubit<CounterState> {
 
   int getCount(int productId) {
     return state.counts[productId] ?? 1;
+  }
+    double calculateTotal(List<CartModel> cartItems) {
+    return cartItems.fold<double>(
+      0,
+      (sum, item) => sum + (item.realPrice * getCount(item.product.id)),
+    );
   }
 }

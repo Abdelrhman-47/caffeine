@@ -13,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterComponents extends StatefulWidget {
- const RegisterComponents({super.key});
+  const RegisterComponents({super.key});
 
   @override
   State<RegisterComponents> createState() => _RegisterComponentsState();
@@ -75,38 +75,60 @@ class _RegisterComponentsState extends State<RegisterComponents> {
             isPassword: true,
             controller: TextEditingController(),
             validator: (v) {
-              return   AppValidators.passwordValidator(v);
-            }
-           
-            
+              return AppValidators.passwordValidator(v);
+            },
           ),
           Spacing.vSpace(4.h),
-           BlocListener<AuthCubit, AuthState>(
+          BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
-              if(state is AuthFailure){
-             showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Error'),
-                    content: Text(state.error),
-                    actions: [
-                      TextButton(
-                        child: Text('Close'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+              if (state is AuthFailure) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.r),
                       ),
-                    ],
-                  );
-                },
-              );
+                      title: Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 50.sp,
+                      ),
+                      content: Text(
+                        state.error,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      actions: [
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Try Again',
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               }
               if (state is AuthSuccess) {
-               context.pushReplacementNamed(AppRoutes.homeLayout);
+                context.pushReplacementNamed(AppRoutes.homeLayout);
               }
             },
-          
+
             child: CustomButton(
               backgroundColor: AppColors.buttonColor,
               text: 'Sign Up',
@@ -114,7 +136,9 @@ class _RegisterComponentsState extends State<RegisterComponents> {
                 if (_formKey.currentState!.validate()) {
                   context.read<AuthCubit>().signUp(
                     email: _email.text.trim(),
-                    password: _password.text, name: _name.text, url: '',
+                    password: _password.text,
+                    name: _name.text,
+                    url: '',
                   );
                 }
               },

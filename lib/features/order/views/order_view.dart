@@ -362,8 +362,57 @@ class _OrderViewState extends State<OrderView> {
                       CustomButton(
                         text: 'Confirm',
                         onPressed: () {
-                          context.read<CartCubit>().deleteall();
-                          context.read<OrderCubit>().deleteall();
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: Colors.green,
+                                    size: 60.sp,
+                                  ),
+                                  Spacing.vSpace(15.h),
+                                  Text(
+                                    'Order Placed Successfully!',
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop(); // Close dialog
+                                      context.read<CartCubit>().deleteall();
+                                      context.read<OrderCubit>().deleteall();
+                                      context.go(
+                                        AppRoutes.homeLayout,
+                                      ); // Go to home
+                                    },
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(
+                                        color: AppColors.primaryColor,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                         textColor: Colors.white,
                         height: 45.h,

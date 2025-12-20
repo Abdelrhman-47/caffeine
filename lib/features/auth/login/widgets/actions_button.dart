@@ -30,24 +30,44 @@ class ActionsButton extends StatelessWidget {
               context.goNamed(AppRoutes.homeLayout);
             }
             if (state is AuthFailure) {
-                showDialog(
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Error'),
-                    content: Text(state.error),
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
+                    title: const Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    content: Text(
+                      state.error,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16.sp, color: Colors.black87),
+                    ),
                     actions: [
-                      TextButton(
-                        child: Text('Close'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Try Again',
+                            style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
-                    );
-                }
-                        );
-                
+                  );
+                },
+              );
             }
           },
 

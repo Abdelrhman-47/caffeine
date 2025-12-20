@@ -71,39 +71,55 @@ class FavoritesView extends StatelessWidget {
                   child: BlocBuilder<FavCubit, FavState>(
                     builder: (context, state) {
                       if (state is FavLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       } else if (state is FavError) {
-                        return Center(
-                          child: Text(state.message),
-                        );
+                        return Center(child: Text(state.message));
                       } else if (state is FavLoaded) {
                         final favs = state.favsData;
-
-                      return ListView.builder(
-                       
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.zero,
-                        itemCount: favs.length,
-                        itemBuilder: (ctx, index) {
-                           final fav = favs[index];
-                          final product =fav.product;
-                        final isFave =fav.isFav;
-                          return SizedBox(
-                            width: 160.w,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w),
-                              child: FavItem(
-                                fav: product, isFave: isFave,
-                              ),
+                        if (favs.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.favorite_border,
+                                  size: 60.sp,
+                                  color: Colors.white70,
+                                ),
+                                Spacing.vSpace(10.h),
+                                Text(
+                                  'No Favorites Yet',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           );
-                        },
-                      );
-                    }
-                    return SizedBox.shrink();
-                    }
+                        }
+
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.zero,
+                          itemCount: favs.length,
+                          itemBuilder: (ctx, index) {
+                            final fav = favs[index];
+                            final product = fav.product;
+                            final isFave = fav.isFav;
+                            return SizedBox(
+                              width: 160.w,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                child: FavItem(fav: product, isFave: isFave),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      return SizedBox.shrink();
+                    },
                   ),
                 ),
               ],

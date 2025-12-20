@@ -1,17 +1,11 @@
 import 'package:caffeine/core/constants/app_colors.dart';
-import 'package:caffeine/core/sheared_widgets/custom_button.dart';
 import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
 import 'package:caffeine/features/cart/cubit/cart_cubit/cart_state.dart';
-import 'package:caffeine/features/cart/cubit/counter_cubit/counter_cubit.dart';
-
+import 'package:caffeine/features/cart/views/widgets/bottom_section.dart';
 import 'package:caffeine/features/cart/views/widgets/cart_view_item.dart';
-import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:caffeine/core/routing/app_routes.dart';
-import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -20,7 +14,6 @@ class CartView extends StatefulWidget {
   State<CartView> createState() => _CartViewState();
 }
 
-// cart_view.dart
 class _CartViewState extends State<CartView> {
   late final List<Color> _gradientColors;
   late ScrollController controller;
@@ -37,9 +30,9 @@ class _CartViewState extends State<CartView> {
       Colors.white.withOpacity(.4),
       Colors.white.withOpacity(.3),
     ];
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartCubit>().getCartItems();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   context.read<CartCubit>().getCartItems();
+    // });
   }
 
   @override
@@ -48,7 +41,6 @@ class _CartViewState extends State<CartView> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: BlocConsumer<CartCubit, CartState>(
-          // استخدم listener للـ messages
           listener: (context, state) {
             if (state.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +76,27 @@ class _CartViewState extends State<CartView> {
                         child: state.isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : state.cartItems.isEmpty
-                            ? const Center(child: Text('السلة فارغة'))
+                            ? const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.shopping_cart_outlined,
+                                      size: 100,
+                                      color: Colors.grey,
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'Your Cart is Empty',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             : ListView.builder(
                                 controller: controller,
                                 padding: EdgeInsets.symmetric(
@@ -147,74 +159,7 @@ class _CartViewState extends State<CartView> {
                     right: 0,
                     left: 0,
                     bottom: 0,
-                    child: DarkGlassContainer(
-                      height: 170.h,
-                      width: double.infinity,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.r),
-                        topRight: Radius.circular(30.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 30.h,
-                          left: 20.w,
-                          right: 20.w,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Total Price',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                                SizedBox(height: 5.h),
-                                Text(
-                                  '\$ ${context.read<CartCubit>().calculateTotal(state.cartItems, context.watch<CounterCubit>().state.counts).toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontSize: 20.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            CustomButton(
-                              text: 'Confirm Order',
-                              onPressed: () => context
-                                  .read<OrderCubit>()
-                                  .confirmCartOrders(
-                                    cartItems: state.cartItems,
-                                    productCounts: context
-                                        .read<CounterCubit>()
-                                        .state
-                                        .counts,
-                                  )
-                                  .then((_) {
-                                    context.push(AppRoutes.order);
-                                  }),
-                              height: 50.h,
-                              width: 160.w,
-                              borderRadius: BorderRadius.circular(25.r),
-                              outLineButton: false,
-                              backgroundColor: AppColors.primaryColor,
-                              textStyle: TextStyle(
-                                fontSize: 16.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textColor: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: BottomSection(state: state),
                   ),
               ],
             );
@@ -223,33 +168,6 @@ class _CartViewState extends State<CartView> {
       ),
     );
   }
-
-  // double _calculateTotal(CartState state) {
-  //   return state.cartItems.fold<double>(
-  //                                 0,
-  //                                 (sum, item) =>
-  //                                     sum +
-  //                                     item.realPrice *
-  //                                         context
-  //                                             .watch<CounterCubit>()
-  //                                             .getCount(item.product.id),
-  //                               );
-  // }
-
-  // void _confirmOrder(CartState state) {
-  //   for (var item in state.cartItems) {
-  //     final count = context.read<CounterCubit>().getCount(item.product.id);
-  //     if (count > 0) {
-  //       context.read<OrderCubit>().placeOrder(
-  //             count: count,
-  //             itemPrice: item.realPrice,
-  //             productId: item.product.id,
-  //             totalPrice: item.realPrice * count,
-  //           );
-  //     }
-  //   }
-  //   context.push(AppRoutes.order);
-  // }
 
   @override
   void dispose() {

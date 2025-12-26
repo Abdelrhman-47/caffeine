@@ -13,6 +13,7 @@ abstract class OrderRepo {
   });
   Future<List<OrderModel>> getUserOrders();
   Future<void>deleteall();
+  Future<void> ordered({required double totalPrice,String orderIs, String countIs});
 }
 
 class OrderRepoImpl implements OrderRepo {
@@ -68,5 +69,25 @@ class OrderRepoImpl implements OrderRepo {
       log('error in deleteall $e');
       rethrow;
     }    
+  }
+  
+  @override
+  Future<void> ordered({required double totalPrice, String? orderIs, String? countIs}) async{
+    final Map<String, dynamic> body = {
+      "user_id": supabase.auth.currentUser!.id,
+      "total_price": totalPrice,
+      "order_is": orderIs,
+      "count_is":countIs
+    };
+    try {
+      return await _apiServices.post(
+        'https://gaogtmhoavbrmblbbfwi.supabase.co/rest/v1/order_confirmed',
+        body,
+      );
+    } catch (e) {
+      log('error in ordered $e');
+      rethrow;
+    }
+    
   }
 }

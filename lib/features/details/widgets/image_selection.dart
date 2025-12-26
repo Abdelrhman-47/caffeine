@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductImageSection extends StatelessWidget {
   final double scale;
@@ -16,13 +17,16 @@ class ProductImageSection extends StatelessWidget {
           switchInCurve: Curves.easeOutCubic,
           switchOutCurve: Curves.easeInCubic,
           transitionBuilder: (Widget child, Animation<double> animation) {
-            final slideAnimation = Tween<Offset>(
-              begin: const Offset(1.5, 0.0), 
-              end: Offset.zero,
-            ).animate(CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-            ));
+            final slideAnimation =
+                Tween<Offset>(
+                  begin: const Offset(1.5, 0.0),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                );
 
             final fadeAnimation = Tween<double>(
               begin: 0.0,
@@ -31,33 +35,23 @@ class ProductImageSection extends StatelessWidget {
 
             return SlideTransition(
               position: slideAnimation,
-              child: FadeTransition(
-                opacity: fadeAnimation,
-                child: child,
-              ),
+              child: FadeTransition(opacity: fadeAnimation, child: child),
             );
           },
           child: Container(
-            key: ValueKey<double>(scale), 
+            key: ValueKey<double>(scale),
             width: double.infinity,
             height: 300.h,
             child: Transform.scale(
               scale: scale,
-              child: Image.network(
-                imagePath,
+              child: CachedNetworkImage(
+                imageUrl: imagePath,
                 fit: BoxFit.contain,
-                
-                cacheWidth:
-                    (300 *
-                            1.7 *
-                            MediaQueryData.fromView(
-                              WidgetsBinding
-                                  .instance
-                                  .platformDispatcher
-                                  .views
-                                  .first,
-                            ).devicePixelRatio)
-                        .round(),
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[300],
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.image),
               ),
             ),
           ),

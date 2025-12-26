@@ -5,6 +5,7 @@ import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SliderComponent extends StatelessWidget {
   const SliderComponent({super.key, required this.offer});
@@ -23,7 +24,19 @@ class SliderComponent extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: 10.w),
-                  child: Image.network(offer.url1, width: 100.w, height: 100.h),
+                  child: CachedNetworkImage(
+                    imageUrl: offer.url1,
+                    width: 100.w,
+                    height: 100.h,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      width: 100.w,
+                      height: 100.h,
+                      color: Colors.grey[300],
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.image),
+                  ),
                 ),
                 Spacing.hSpace(2.w),
                 Column(

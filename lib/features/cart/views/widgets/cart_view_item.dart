@@ -5,6 +5,7 @@ import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CartViewItem extends StatelessWidget {
   CartViewItem({
@@ -30,10 +31,12 @@ class CartViewItem extends StatelessWidget {
               left: 10.w,
               top: -10.h,
               bottom: -10.h,
-              child: Image.network(
-                productData.url,
+              child: CachedNetworkImage(
+                imageUrl: productData.url,
                 width: 120.w,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.image),
               ),
             ),
             Positioned(

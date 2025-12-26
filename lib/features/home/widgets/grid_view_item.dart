@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CardItem extends StatefulWidget {
   CardItem({super.key, required this.product, required this.isFave});
@@ -99,10 +100,18 @@ class _CardItemState extends State<CardItem> {
                       ),
                     ),
                     Center(
-                      child: Image.network(
-                        widget.product.url,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.product.url,
                         width: 115.w,
                         height: 115.h,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          width: 115.w,
+                          height: 115.h,
+                          color: Colors.grey[300],
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.image),
                       ),
                     ),
                   ],
@@ -133,8 +142,9 @@ class _CardItemState extends State<CardItem> {
                       Row(
                         children: [
                           Spacing.hSpace(1.w),
-                          Text('\$ ${ widget.product.price.toStringAsFixed(1)}',
-                          
+                          Text(
+                            '\$ ${widget.product.price.toStringAsFixed(1)}',
+
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 13.sp,

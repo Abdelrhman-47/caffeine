@@ -51,8 +51,8 @@ class BottomSection extends StatelessWidget {
             ),
             CustomButton(
               text: 'Confirm Order',
-              onPressed: () {
-                context.read<OrderCubit>().confirmCartOrders(
+              onPressed: () async {
+                await context.read<OrderCubit>().confirmCartOrders(
                   cartItems: state.cartItems,
                   productCounts: context.read<CounterCubit>().state.counts,
                 );

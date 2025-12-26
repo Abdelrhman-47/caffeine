@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "484992258162",
+    "project_id": "notifi-536aa",
+    "storage_bucket": "notifi-536aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484992258162:android:8f68da6e394aec2eb2f2eb",
+        "android_client_info": {
+          "package_name": "com.example.caffeine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5PTcu416FrmaNfxEoHlfNH5FtbTScen8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484992258162:android:a2d0668d9353da14b2f2eb",
+        "android_client_info": {
+          "package_name": "com.example.notification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5PTcu416FrmaNfxEoHlfNH5FtbTScen8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

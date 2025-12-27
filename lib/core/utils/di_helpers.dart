@@ -2,6 +2,7 @@ import 'package:caffeine/core/constants/app_constats.dart';
 import 'package:caffeine/core/helpers/pref_helpers.dart';
 import 'package:caffeine/core/network/api_services.dart';
 import 'package:caffeine/core/network/dio_clint.dart';
+import 'package:caffeine/core/sensetive_constatnts.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/data/repo.dart';
 import 'package:caffeine/features/cart/cubit/cart_cubit/cart_cubit.dart';
@@ -17,6 +18,7 @@ import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:caffeine/features/order/data/order_repo.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
 import 'package:caffeine/features/profile/data/user_repo.dart';
+import 'package:flutter_paymob/flutter_paymob.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,6 +26,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
+    await FlutterPaymob.instance.initialize(
+    apiKey:
+        apiKeyPay,
+    integrationID: integrationID, 
+    walletIntegrationId: walletIntegrationId, 
+    iFrameID: 991540, 
+  );
   await Supabase.initialize(
     url: 'https://gaogtmhoavbrmblbbfwi.supabase.co',
     anonKey: AppConstats.annoneKey,

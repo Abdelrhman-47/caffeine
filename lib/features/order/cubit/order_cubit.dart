@@ -140,7 +140,7 @@ class OrderCubit extends Cubit<OrderState> {
       await _orderRepo.ordered(
         totalPrice: totalPrice,
         orderIs: orderNames,
-        countIs: orderCounts,
+        countIs: orderCounts, 
       );
 
       emit(OrderState.success());

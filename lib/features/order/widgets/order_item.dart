@@ -17,6 +17,7 @@ class OrderItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: SizedBox(
+        width: 270.w,
         height: 120.h,
         child: Stack(
           children: [
@@ -29,7 +30,7 @@ class OrderItem extends StatelessWidget {
               child: order.product.url.isNotEmpty
                   ? CachedNetworkImage(
                       imageUrl: order.product.url,
-                      width: 120.w,
+                      width: 90.w,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         width: 120.w,
@@ -84,7 +85,7 @@ class OrderItem extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
+                          color: Colors.white70 ,
                         ),
                       ),
                     ],

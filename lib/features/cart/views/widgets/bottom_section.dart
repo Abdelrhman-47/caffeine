@@ -56,7 +56,16 @@ class BottomSection extends StatelessWidget {
                   cartItems: state.cartItems,
                   productCounts: context.read<CounterCubit>().state.counts,
                 );
-                context.push(AppRoutes.order);
+                context.goNamed(
+                  AppRoutes.order,
+                  extra: context
+                      .read<CartCubit>()
+                      .calculateTotal(
+                        state.cartItems,
+                        context.read<CounterCubit>().state.counts,
+                      )
+                      
+                );
               },
 
               height: 50.h,

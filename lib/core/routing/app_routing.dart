@@ -79,16 +79,20 @@ class AppRouter {
       GoRoute(
         name: AppRoutes.order,
         path: AppRoutes.order,
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => getIt<OrderCubit>()),
-            BlocProvider(create: (context) => getIt<CartCubit>()),
-          ],
-          child: const OrderView(),
-        ),
+        builder: (context, state) {
+          final double totalPrice = state.extra as double;
+        return  MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => getIt<OrderCubit>()),
+              BlocProvider(create: (context) => getIt<CartCubit>()),
+            ],
+            child: OrderView(totalPrice: totalPrice),
+          );
+        },
       ),
-    ],
-    errorBuilder: (context, state) =>
+      
+    ]
+ ,   errorBuilder: (context, state) =>
         const Scaffold(body: Center(child: Text('404 Not Found'))),
   );
 }

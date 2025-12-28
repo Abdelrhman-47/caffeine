@@ -15,20 +15,18 @@ class AppStyle {
     color: Colors.white,
   );
   static TextStyle headLineStyle = GoogleFonts.merriweather(
-    color: Colors.white,
+    color: AppColors.secondaryColor.withOpacity(.8),
     fontSize: 18.sp,
     fontWeight: FontWeight.bold,
   );
   static TextStyle supTitleStyle = GoogleFonts.merriweather(
-                      color: Colors.white.withOpacity(.6),
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w400,
-                    );
+    color: AppColors.secondaryColor.withOpacity(.8),
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w400,
+  );
   static TextStyle signUpStyle = GoogleFonts.merriweather(
-                    
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
-                
-                    );
+    fontSize: 15.sp,
+    fontWeight: FontWeight.bold,
+    color: AppColors.primaryColor,
+  );
 }

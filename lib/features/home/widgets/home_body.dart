@@ -52,7 +52,9 @@ class HomeBody extends StatelessWidget {
                       // build a set of favorite product ids
                       final Set<int> favIds = {};
                       if (favState is FavLoaded) {
-                        favIds.addAll(favState.favsData.map((f) => f.productId));
+                        favIds.addAll(
+                          favState.favsData.map((f) => f.productId),
+                        );
                       }
 
                       return GridView.builder(
@@ -66,12 +68,17 @@ class HomeBody extends StatelessWidget {
                         ),
                         itemCount: products.length,
                         itemBuilder: (context, index) {
-                          final product = isLoading ? ProductModel.empty() : products[index];
+                          final product = isLoading
+                              ? ProductModel.empty()
+                              : products[index];
                           final isFave = favIds.contains(product.id);
                           return GestureDetector(
                             onTap: isLoading
                                 ? null
-                                : () => context.pushNamed(AppRoutes.details, extra: product),
+                                : () => context.pushNamed(
+                                    AppRoutes.details,
+                                    extra: product,
+                                  ),
                             child: CardItem(product: product, isFave: isFave),
                           );
                         },

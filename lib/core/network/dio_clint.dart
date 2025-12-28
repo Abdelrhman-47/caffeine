@@ -1,6 +1,6 @@
-import 'package:caffeine/core/helpers/pref_helpers.dart';
-import 'package:caffeine/core/utils/di_helpers.dart';
+
 import 'package:dio/dio.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DioClient {
   final Dio _dio = Dio(
@@ -14,13 +14,15 @@ class DioClient {
   );
 
   DioClient() {
-    final _pref = getIt<PrefHelpers>();
+    // final _pref = getIt<PrefHelpers>();
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = _pref.getToken();
-
-          options.headers['Authorization'] = 'Bearer $token';
+          // final token = _pref.getToken();
+          final session = Supabase.instance.client.auth.currentSession;
+          if (session != null) {
+            options.headers['Authorization'] = 'Bearer ${session.accessToken}';
+          }
 
           print('➡️ Request to: ${options.uri}');
           print('Headers: ${options.headers}');

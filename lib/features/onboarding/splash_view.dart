@@ -1,3 +1,4 @@
+import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/pref_helpers.dart';
 import 'package:caffeine/core/routing/app_routes.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
@@ -18,17 +19,16 @@ class _SplashViewState extends State<SplashView> {
     navigation();
     super.initState();
   }
+
   final _prefsHelper = getIt<PrefHelpers>();
 
   void navigation() {
     Future.delayed(Duration(milliseconds: 3400)).then((_) async {
-
-      if (_prefsHelper.isOnboardingSeen()&&_prefsHelper.isLogin()) {
+      if (_prefsHelper.isOnboardingSeen() && _prefsHelper.isLogin()) {
         context.pushNamed(AppRoutes.homeLayout);
       } else if (_prefsHelper.isOnboardingSeen()) {
         context.pushNamed(AppRoutes.login);
-      }
-      else {
+      } else {
         context.goNamed(AppRoutes.onboarding);
       }
     });
@@ -36,6 +36,35 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Lottie.asset('assets/lotties/CoffeeBeansLoader.json',backgroundLoading: true)));
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.secondaryColor.withOpacity(.5),
+                AppColors.secondaryColor.withOpacity(.4),
+                AppColors.secondaryColor.withOpacity(.3),
+                Colors.white.withOpacity(.4),
+                Colors.white.withOpacity(.4),
+                Colors.white.withOpacity(.3),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+
+          child: Center(
+            child: Lottie.asset(
+              'assets/lotties/CoffeeBeansLoader.json',
+              backgroundLoading: true,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

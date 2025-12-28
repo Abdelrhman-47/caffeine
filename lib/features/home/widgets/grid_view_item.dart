@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/features/favorite/cubit/fav_cubit.dart';
-import 'package:caffeine/features/favorite/cubit/fav_state.dart';
 import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,6 @@ class _CardItemState extends State<CardItem> {
   @override
   void didUpdateWidget(covariant CardItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // sync with external fav state updates
     if (oldWidget.isFave != widget.isFave) {
       _localIsFave = widget.isFave;
     }
@@ -45,7 +43,7 @@ class _CardItemState extends State<CardItem> {
       borderRadius: BorderRadius.circular(16.r),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 120, sigmaY: 450),
-        child: Container(
+        child: Container(height: 1000,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -62,7 +60,6 @@ class _CardItemState extends State<CardItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // use local flag for immediate feedback, persist via cubit
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -108,7 +105,7 @@ class _CardItemState extends State<CardItem> {
                         placeholder: (context, url) => Container(
                           width: 115.w,
                           height: 115.h,
-                          color: Colors.grey[300],
+                          color: Colors.transparent,
                           child: Center(child: CircularProgressIndicator()),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.image),
@@ -129,15 +126,7 @@ class _CardItemState extends State<CardItem> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Spacing.vSpace(2.h),
-                      Text(
-                        'this is first coffe',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 6.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                 
                       Spacing.vSpace(2.h),
                       Row(
                         children: [

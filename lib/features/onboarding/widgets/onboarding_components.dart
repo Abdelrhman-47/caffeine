@@ -78,7 +78,7 @@ final _prefsHelper = getIt<PrefHelpers>();
                 Image.asset(data.bottomImage),
                 Spacer(),
                 CustomButton(
-                  backgroundColor: AppColors.buttonColor,
+                  backgroundColor: AppColors.secondaryColor.withOpacity(.8),
                   text: 'Next',
                   onPressed: next,
                   textColor: Colors.black,

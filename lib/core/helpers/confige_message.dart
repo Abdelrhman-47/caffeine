@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// 🔥 Background Message Handler (MUST be top-level function)
 @pragma('vm:entry-point')
@@ -18,7 +19,7 @@ class ConfigMessage {
   static Future<void> init() async {
     await _requestPermission();
     await _initLocalNotifications();
-    await _getToken();
+    await getToken();
     _setupTokenRefreshListener();
     _foregroundListener();
     _backgroundListener();
@@ -92,7 +93,7 @@ class ConfigMessage {
   }
 
   /// 🔑 Get FCM Token - الحصول على التوكن
-  static Future<String?> _getToken() async {
+  static Future<String?> getToken() async {
     try {
       String? token = await _fcm.getToken();
       log('🔑 FCM TOKEN => $token');
@@ -106,8 +107,17 @@ class ConfigMessage {
 
   /// 🔄 Token Refresh Listener - مراقبة تحديث التوكن
   static void _setupTokenRefreshListener() {
-    _fcm.onTokenRefresh.listen((newToken) {
+    _fcm.onTokenRefresh.listen((newToken)async {
       log('🔄 Token refreshed: $newToken');
+        final supabase = Supabase.instance.client;
+    final userId = supabase.auth.currentUser?.id;
+
+    if (userId != null) {
+      await supabase
+          .from('users')
+          .update({'notification_token': newToken})
+          .eq('user_id', userId);
+    }
       // TODO: Send the new token to your backend server
     });
   }

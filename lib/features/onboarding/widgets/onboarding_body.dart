@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class OnboardingBody extends StatefulWidget {
-  OnboardingBody({super.key});
+ const OnboardingBody({super.key});
 
   @override
   State<OnboardingBody> createState() => _OnboardingBodyState();

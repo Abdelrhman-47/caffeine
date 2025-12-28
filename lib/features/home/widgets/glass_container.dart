@@ -1,9 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-// ============================================
-// 🪟 GLASS CONTAINER
-// ============================================
+
 
 class GlassContainer extends StatelessWidget {
   final Widget? child;
@@ -71,11 +69,7 @@ class GlassContainer extends StatelessWidget {
   }
 }
 
-// ============================================
-// 🎨 PRE-STYLED VARIANTS
-// ============================================
 
-// Dark Glass
 class DarkGlassContainer extends StatelessWidget {
   final Widget? child;
   final double? width;

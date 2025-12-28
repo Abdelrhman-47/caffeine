@@ -32,7 +32,7 @@ class SliderComponent extends StatelessWidget {
                     placeholder: (context, url) => Container(
                       width: 100.w,
                       height: 100.h,
-                      color: Colors.grey[300],
+                      color: Colors.transparent,
                       child: Center(child: CircularProgressIndicator()),
                     ),
                     errorWidget: (context, url, error) => Icon(Icons.image),

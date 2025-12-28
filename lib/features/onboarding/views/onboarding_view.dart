@@ -8,8 +8,25 @@ class OnboardingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(backgroundColor: AppColors.primaryColor,
-        body: OnboardingBody(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          width: double.infinity,
+           decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.secondaryColor.withOpacity(.5),
+                AppColors.secondaryColor.withOpacity(.4),
+                AppColors.secondaryColor.withOpacity(.3),
+                Colors.white.withOpacity(.4),
+                Colors.white.withOpacity(.4),
+                Colors.white.withOpacity(.3),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: OnboardingBody()),
       ),
     );
   }

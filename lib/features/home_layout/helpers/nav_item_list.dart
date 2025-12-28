@@ -1,4 +1,5 @@
 import 'package:caffeine/features/home_layout/widgets/glass_nav.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,30 +7,14 @@ import 'package:flutter_svg/svg.dart';
 class NavItemList{
   static final List <UltraNavItem> items=[
         UltraNavItem(
-                            icon: SvgPicture.asset(
-                              'assets/svgs/house-regular-full.svg',
-                              color: Colors.white,
-                              width: 16.w,
-                            ),
+                            icon: Icon(CupertinoIcons.home,size: 15.sp,color: Colors.white),
                             label: 'Home',
-                            activeIcon: SvgPicture.asset(
-                              'assets/svgs/house-regular-full.svg',
-                              color: Colors.white,
-                              width: 20.w,
-                            ),
+                            activeIcon: Icon(CupertinoIcons.home,size: 17.sp,color: Colors.white),
                           ),
                           UltraNavItem(
-                            icon: SvgPicture.asset(
-                              'assets/svgs/basket-shopping-solid-full.svg',
-                              color: Colors.white,
-                              width: 16.w,
-                            ),
+                            icon: Icon(CupertinoIcons.cart,size: 15.sp,color: Colors.white,),
                             label: 'cart',
-                            activeIcon: SvgPicture.asset(
-                              'assets/svgs/basket-shopping-solid-full.svg',
-                              color: Colors.white,
-                              width: 20.w,
-                            ),
+                            activeIcon:  Icon(CupertinoIcons.cart,size: 17.sp,color: Colors.white,),
                           ),
                           UltraNavItem(
                             icon: Icon(

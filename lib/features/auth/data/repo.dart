@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:caffeine/core/helpers/confige_message.dart';
 import 'package:caffeine/core/helpers/pref_helpers.dart';
 import 'package:caffeine/core/network/api_services.dart';
 import 'package:dartz/dartz.dart';
@@ -9,7 +10,7 @@ abstract class UserRepo {
   Future<Either<AuthException, User>> signUp({
     required String email,
     required String password,
-     required String name,
+    required String name,
     required String url,
   });
 
@@ -17,7 +18,7 @@ abstract class UserRepo {
     required String email,
     required String password,
   });
-  Future<void> addUserInfo(String name,String? url);
+  Future<void> addUserInfo(String name, String? url, String? notificationToken);
   Future<void> logout();
 }
 
@@ -46,11 +47,22 @@ class UserRepoImplement extends UserRepo {
       if (response.user == null) {
         return left(AuthException('Login failed: No user returned'));
       }
-_supabase.auth.onAuthStateChange.listen((data) {
-  if (data.event == AuthChangeEvent.tokenRefreshed) {
-    _sharedPref.saveToken(data.session!.accessToken);
-  }
-});      _sharedPref.saveLogin();
+      _supabase.auth.onAuthStateChange.listen((data) {
+        if (data.event == AuthChangeEvent.tokenRefreshed) {
+          _sharedPref.saveToken(data.session!.accessToken);
+        }
+      });
+      _sharedPref.saveLogin();
+       final notificationToken = await ConfigMessage.getToken();
+
+    await _supabase
+        .from('users')
+        .update({
+          'notification_token': notificationToken,
+        })
+        .eq('user_id', response.user!.id);
+
+    _sharedPref.saveLogin();
       return right(response.user!);
     } on AuthException catch (e) {
       return Left(e);
@@ -73,12 +85,14 @@ _supabase.auth.onAuthStateChange.listen((data) {
       );
       _sharedPref.saveToken(response.session!.accessToken);
       log('==========${response.session!.accessToken}===============');
-       addUserInfo(name,url);
+      final notificationToken = await ConfigMessage.getToken();
+      addUserInfo(name, url,notificationToken);
       return right(response.user!);
     } on AuthException catch (e) {
       return Left(e);
     } catch (e) {
       return Left(AuthException(e.toString()));
+    
     }
   }
 
@@ -86,16 +100,20 @@ _supabase.auth.onAuthStateChange.listen((data) {
   Future<void> logout() async {
     await _supabase.auth.signOut();
   }
-  
-  @override
-  Future<void> addUserInfo(String name,String? url) async{
-    final  respnse=await _apiServices.post('users', {
- "user_id": _supabase.auth.currentUser?.id,
-      "name": name,
-      "email":_supabase.auth.currentUser?.email ,
-      "image_url": null,
 
+  @override
+  Future<void> addUserInfo(
+    String name,
+    String? url,
+    String? notificationToken,
+  ) async {
+    final respnse = await _apiServices.post('users', {
+      "user_id": _supabase.auth.currentUser?.id,
+      "name": name,
+      "email": _supabase.auth.currentUser?.email,
+      "image_url": null,
+       "notification_token": notificationToken,
     });
-  return respnse;
+    return respnse;
   }
 }

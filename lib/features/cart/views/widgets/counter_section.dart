@@ -9,58 +9,38 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CounterSection extends StatelessWidget {
   const CounterSection({super.key, required this.productId});
-final int productId;
+  final int productId;
   @override
   Widget build(BuildContext context) {
-    return     Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                          context.read<CounterCubit>().decrement(productId);
-                          },
-                          child: GlassContainer(
-                            height: 30.h,
-                            width: 30.w,
-                            padding: EdgeInsets.all(1.r),
-                            blur: 1,
-                            color: AppColors.primaryColor.withOpacity(.4),
-                            borderRadius: BorderRadius.circular(10.r),
-                            border: Border.all(
-                              color: AppColors.primaryColor,
-                              width: 1.5,
-                            ),
-                            child: Icon(Icons.minimize, color: Colors.white),
-                          ),
-                        ),
-                        Spacing.hSpace(6.w),
-                        Text(
-                        context.watch<CounterCubit>().getCount(productId).toString(),
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
-                        ),
-                        Spacing.hSpace(6.w),
-                        GestureDetector(
-                          onTap: () {
-                          context.read<CounterCubit>().increment(productId);
-                          },
-                          child: GlassContainer(
-                            height: 30.h,
-                            width: 30.w,
-                            blur: 1,
-                            color: AppColors.primaryColor.withOpacity(.4),
-                            borderRadius: BorderRadius.circular(10.r),
-                            border: Border.all(
-                              color: AppColors.primaryColor,
-                              width: 1.5,
-                            ),
-
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            context.read<CounterCubit>().decrement(productId);
+          },
+          child: CircleAvatar(
+            radius: 20.r,
+            backgroundColor: AppColors.primaryColor,
+            child: Icon(CupertinoIcons.minus, color: Colors.white, size: 20.sp),
+          ),
+        ),
+        Spacing.hSpace(12.w),
+        Text(
+          context.watch<CounterCubit>().getCount(productId).toString(),
+          style: TextStyle(fontSize: 18.sp, color: Colors.white),
+        ),
+        Spacing.hSpace(12.w),
+        GestureDetector(
+          onTap: () {
+            context.read<CounterCubit>().increment(productId);
+          },
+          child: CircleAvatar(
+            radius: 20.r,
+            backgroundColor: AppColors.primaryColor,
+            child: Icon(CupertinoIcons.add, color: Colors.white, size: 20.sp),
+          ),
+        ),
+      ],
+    );
   }
 }

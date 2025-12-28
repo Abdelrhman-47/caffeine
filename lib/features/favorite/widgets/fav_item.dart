@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:caffeine/core/widgets/product_image.dart';
 
 class FavItem extends StatelessWidget {
   const FavItem({super.key, required this.fav, required this.isFave});
@@ -64,19 +64,7 @@ class FavItem extends StatelessWidget {
                       ),
                     ),
                     Center(
-                      child: CachedNetworkImage(
-                        imageUrl: fav.url,
-                        width: 115.w,
-                        height: 115.h,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          width: 115.w,
-                          height: 115.h,
-                          color: Colors.grey[300],
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.image),
-                      ),
+                      child: ProductCardImage(imageUrl: fav.url, size: 115),
                     ),
                   ],
                 ),

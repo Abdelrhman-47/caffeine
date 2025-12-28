@@ -5,7 +5,7 @@ import 'package:caffeine/features/order/data/order_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:caffeine/core/widgets/product_image.dart';
 
 class OrderItem extends StatelessWidget {
   final OrderModel order;
@@ -28,23 +28,7 @@ class OrderItem extends StatelessWidget {
               top: -10.h,
               bottom: -10.h,
               child: order.product.url.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: order.product.url,
-                      width: 90.w,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 120.w,
-                        color: Colors.grey[300],
-                        child: Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.image_not_supported,
-                        color: Colors.white,
-                        size: 50.sp,
-                      ),
-                    )
+                  ? ProductCartImage(imageUrl: order.product.url, width: 90)
                   : Icon(Icons.image, color: Colors.white, size: 50.sp),
             ),
             // Details
@@ -85,7 +69,7 @@ class OrderItem extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white70 ,
+                          color: Colors.white70,
                         ),
                       ),
                     ],

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:caffeine/core/widgets/product_image.dart';
 
 class CardItem extends StatefulWidget {
   CardItem({super.key, required this.product, required this.isFave});
@@ -43,7 +43,8 @@ class _CardItemState extends State<CardItem> {
       borderRadius: BorderRadius.circular(16.r),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 120, sigmaY: 450),
-        child: Container(height: 1000,
+        child: Container(
+          height: 1000,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -97,18 +98,9 @@ class _CardItemState extends State<CardItem> {
                       ),
                     ),
                     Center(
-                      child: CachedNetworkImage(
+                      child: ProductCardImage(
                         imageUrl: widget.product.url,
-                        width: 115.w,
-                        height: 115.h,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          width: 115.w,
-                          height: 115.h,
-                          color: Colors.transparent,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.image),
+                        size: 115.sp,
                       ),
                     ),
                   ],
@@ -126,7 +118,7 @@ class _CardItemState extends State<CardItem> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                 
+
                       Spacing.vSpace(2.h),
                       Row(
                         children: [

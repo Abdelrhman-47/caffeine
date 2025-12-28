@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:caffeine/core/widgets/product_image.dart';
 
 class ProductImageSection extends StatelessWidget {
   final double scale;
@@ -44,14 +44,10 @@ class ProductImageSection extends StatelessWidget {
             height: 300.h,
             child: Transform.scale(
               scale: scale,
-              child: CachedNetworkImage(
+              child: ProductDetailImage(
                 imageUrl: imagePath,
+                height: 300.h,
                 fit: BoxFit.contain,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                errorWidget: (context, url, error) => Icon(Icons.image),
               ),
             ),
           ),

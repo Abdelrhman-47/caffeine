@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAjqBcJ-Ay6iAhhHmh5ma3BH9DJQXchOkE',
+    apiKey: '',
     appId: '1:484992258162:web:44e4a5f999090d30b2f2eb',
     messagingSenderId: '484992258162',
     projectId: 'notifi-536aa',

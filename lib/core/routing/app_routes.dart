@@ -10,5 +10,7 @@ class AppRoutes {
   static const String favorites = '/favorites';
   static const String profile = '/profile';
   static const String order = '/order';
+  static const String success = '/success';
+  
 
 }

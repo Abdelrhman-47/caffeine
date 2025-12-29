@@ -7,10 +7,14 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-          child: HomeBody())
+      child: GestureDetector(
+                onTap: FocusScope.of(context).unfocus,
+        behavior: HitTestBehavior.opaque,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Container(
+            child: HomeBody())
+        ),
       ),
     );
   }

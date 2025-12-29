@@ -13,6 +13,7 @@ import 'package:caffeine/features/onboarding/views/onboarding_view.dart';
 import 'package:caffeine/features/onboarding/splash_view.dart';
 import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:caffeine/features/order/views/order_view.dart';
+import 'package:caffeine/features/profile/widgets/success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -90,6 +91,9 @@ class AppRouter {
           );
         },
       ),
+      GoRoute(path: AppRoutes.success,
+      name: AppRoutes.success,
+       builder: (context, state) => const ProfileSuccessView())
       
     ]
  ,   errorBuilder: (context, state) =>

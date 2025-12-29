@@ -104,11 +104,13 @@ Future<String?> uploadImageToCloudinary() async {
           email: _cachedUserData?.email ?? '',
           imageUrl: imageUrl,
         );
-        
+             fetchUserData();
+
         emit(ProfileUpdateSuccess(
           name: name,
           imageUrl: imageUrl,
         ));
+     fetchUserData();
       },
     );
   }

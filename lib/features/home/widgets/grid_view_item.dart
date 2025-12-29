@@ -44,7 +44,7 @@ class _CardItemState extends State<CardItem> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 120, sigmaY: 450),
         child: Container(
-          height: 1000,
+          
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [

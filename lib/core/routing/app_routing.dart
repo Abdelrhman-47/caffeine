@@ -1,5 +1,6 @@
 import 'package:caffeine/core/routing/app_routes.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
+import 'package:caffeine/core/widgets/no_internet.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/login/view/login_view.dart';
 import 'package:caffeine/features/auth/register/view/register_view.dart';
@@ -93,8 +94,10 @@ class AppRouter {
       ),
       GoRoute(path: AppRoutes.success,
       name: AppRoutes.success,
-       builder: (context, state) => const ProfileSuccessView())
-      
+       builder: (context, state) => const ProfileSuccessView()),
+      GoRoute(path: AppRoutes.NoInternetScreen,
+      name: AppRoutes.NoInternetScreen,
+       builder: (context, state) => const NoInternetScreen())
     ]
  ,   errorBuilder: (context, state) =>
         const Scaffold(body: Center(child: Text('404 Not Found'))),

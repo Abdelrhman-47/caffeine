@@ -11,6 +11,7 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String order = '/order';
   static const String success = '/success';
+  static const String NoInternetScreen = '/noInternet';
   
 
 }

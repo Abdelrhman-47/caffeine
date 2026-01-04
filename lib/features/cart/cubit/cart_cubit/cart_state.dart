@@ -1,4 +1,3 @@
-// cart_state.dart
 import 'package:caffeine/features/cart/data/cart_model.dart';
 import 'package:equatable/equatable.dart';
 

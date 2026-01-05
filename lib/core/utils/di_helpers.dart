@@ -76,7 +76,7 @@ Future<void> setupDependencies() async {
     () => ProductRepoImpl(apiServices: getIt<ApiServices>()),
   );
 
-  getIt.registerFactory<ProductCubit>(
+  getIt.registerLazySingleton<ProductCubit>(
     () => ProductCubit(productRepo: getIt<ProductRepo>()),
   );
   getIt.registerFactory<OffersCubit>(

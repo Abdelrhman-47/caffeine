@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:caffeine/core/network/api_services.dart';
+import 'package:caffeine/features/home/data/local_service.dart';
 import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,10 +14,13 @@ abstract class ProductRepo {
 }
 
 class ProductRepoImpl implements ProductRepo {
-  ProductRepoImpl({required ApiServices apiServices})
-      : _apiServices = apiServices;
+  ProductRepoImpl({required ApiServices apiServices, required HiveService hiveService})
+      : _apiServices = apiServices,
+        _hiveService = hiveService;
 
   final ApiServices _apiServices;
+    final HiveService _hiveService;
+
 
 
   @override
@@ -27,10 +31,18 @@ class ProductRepoImpl implements ProductRepo {
       final products = response
           .map<ProductModel>((e) => ProductModel.fromJson(e))
           .toList();
+                await _hiveService.cacheProducts(products);
+
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+            final cached = _hiveService.getCachedProducts();
+               if (cached.isNotEmpty) {
+        return Right(cached);
+      }
+
+
+      return Left('No internet & no cached products');
     }
   }
 
@@ -74,10 +86,18 @@ class ProductRepoImpl implements ProductRepo {
       final products = response
           .map<OfferModel>((e) => OfferModel.fromJson(e))
           .toList();
+                await _hiveService.cacheOffers(products);
+
 
       return Right(products);
     } catch (e) {
-      return Left(e.toString());
+            final cached = _hiveService.getCachedOffers();
+
+      if (cached.isNotEmpty) {
+        return Right(cached);
+      }
+
+      return Left('No internet & no cached offers');
     }
   }
 }

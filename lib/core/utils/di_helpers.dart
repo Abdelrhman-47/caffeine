@@ -13,6 +13,7 @@ import 'package:caffeine/features/favorite/cubit/fav_cubit.dart';
 import 'package:caffeine/features/favorite/data/fav_repo.dart';
 import 'package:caffeine/features/home/cubits/offers_cubit/offers_cubit.dart';
 import 'package:caffeine/features/home/cubits/product_cubit.dart';
+import 'package:caffeine/features/home/data/local_service.dart';
 import 'package:caffeine/features/home/data/product_repo.dart';
 import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:caffeine/features/order/data/order_repo.dart';
@@ -72,8 +73,10 @@ Future<void> setupDependencies() async {
       pref: getIt<PrefHelpers>(),
     ),
   );
+  getIt.registerLazySingleton<HiveService>(() => HiveService());
+
   getIt.registerLazySingleton<ProductRepo>(
-    () => ProductRepoImpl(apiServices: getIt<ApiServices>()),
+    () => ProductRepoImpl(apiServices: getIt<ApiServices>(), hiveService: getIt<HiveService>()),
   );
 
   getIt.registerLazySingleton<ProductCubit>(

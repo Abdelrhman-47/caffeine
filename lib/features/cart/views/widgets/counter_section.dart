@@ -1,7 +1,6 @@
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/features/cart/cubit/counter_cubit/counter_cubit.dart';
-import 'package:caffeine/features/home/widgets/glass_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

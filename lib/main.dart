@@ -5,6 +5,7 @@ import 'package:caffeine/core/helpers/confige_message.dart';
 import 'package:caffeine/core/routing/app_routing.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/core/widgets/no_internet.dart';
+import 'package:caffeine/features/home/data/local_service.dart';
 import 'package:caffeine/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,6 +16,8 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
+      await InitHive.init();
+
   await setupDependencies();
 await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -34,30 +37,30 @@ class Caffeine extends StatefulWidget {
 }
 
 class _CaffeineState extends State<Caffeine> {
-  bool _isConected=false;
-    late StreamSubscription<InternetStatus> _subscription;
+//  bool _isConected=false;
+ //   late StreamSubscription<InternetStatus> _subscription;
     @override
-  void initState() {
-  _subscription = InternetConnection().onStatusChange.listen((status) {
-    switch(status){
-      case InternetStatus.connected:
-        setState(() {
-          _isConected=true;
-        });
-        break;
-      case InternetStatus.disconnected:
-        setState(() {
-          _isConected=false;
-        });
-        break;
-    }
-    });    super.initState();
-  }
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
+  // void initState() {
+  // _subscription = InternetConnection().onStatusChange.listen((status) {
+  //   switch(status){
+  //     case InternetStatus.connected:
+  //       setState(() {
+  //         _isConected=true;
+  //       });
+  //       break;
+  //     case InternetStatus.disconnected:
+  //       setState(() {
+  //         _isConected=false;
+  //       });
+  //       break;
+  //   }
+  //   });    super.initState();
+  // }
+  // @override
+  // void dispose() {
+  //   _subscription.cancel();
+  //   super.dispose();
+  // }
     
 
   @override Widget build(BuildContext context) {
@@ -65,7 +68,8 @@ class _CaffeineState extends State<Caffeine> {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      child:_isConected ? MaterialApp.router(
+      child://_isConected ?
+       MaterialApp.router(
         theme: AppTheme.primary.copyWith(
           textTheme: GoogleFonts.merriweatherTextTheme(
             Theme.of(context).textTheme,
@@ -73,15 +77,16 @@ class _CaffeineState extends State<Caffeine> {
         ),
         debugShowCheckedModeBanner: false,
         routerConfig: AppRouter.router,
-      ):MaterialApp(
-        theme: AppTheme.primary.copyWith(
-          textTheme: GoogleFonts.merriweatherTextTheme(
-            Theme.of(context).textTheme,
-          ),
-        ),
-        debugShowCheckedModeBanner: false,
-        home: const NoInternetScreen(),
-      ),
+      )
+      // :MaterialApp(
+      //   theme: AppTheme.primary.copyWith(
+      //     textTheme: GoogleFonts.merriweatherTextTheme(
+      //       Theme.of(context).textTheme,
+      //     ),
+      //   ),
+      //   debugShowCheckedModeBanner: false,
+      //   home: const NoInternetScreen(),
+      // ),
     );
   }
 }

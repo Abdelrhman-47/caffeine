@@ -1,7 +1,6 @@
 
 
 import 'package:caffeine/features/details/cubit/real_price_cubit.dart';
-import 'package:caffeine/features/details/data/details_repo.dart';
 import 'package:caffeine/features/details/widgets/sized_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/constants/text_style.dart';

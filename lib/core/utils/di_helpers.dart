@@ -2,6 +2,7 @@ import 'package:caffeine/core/constants/app_constats.dart';
 import 'package:caffeine/core/helpers/pref_helpers.dart';
 import 'package:caffeine/core/network/api_services.dart';
 import 'package:caffeine/core/network/dio_clint.dart';
+import 'package:caffeine/core/network/network_cheacker.dart';
 import 'package:caffeine/core/sensetive_constatnts.dart';
 import 'package:caffeine/features/auth/cubit/auth_cubit.dart';
 import 'package:caffeine/features/auth/data/repo.dart';
@@ -86,8 +87,10 @@ getIt.registerLazySingleton<LocalServiceProfile>(() => LocalServiceProfile());
   getIt.registerFactory<OffersCubit>(
     () => OffersCubit(productRepo: getIt<ProductRepo>()),
   );
+    getIt.registerLazySingleton(() => NetworkChecker());
+
   getIt.registerLazySingleton<DetailsRepo>(
-    () => DetailsRepoImpl(apiServices: getIt<ApiServices>()),
+    () => DetailsRepoImpl(apiServices: getIt<ApiServices>(), networkChecker: getIt<NetworkChecker>()),
   );
   getIt.registerFactory<RealPriceCubit>(
     () => RealPriceCubit(detailsRepo: getIt<DetailsRepo>()),

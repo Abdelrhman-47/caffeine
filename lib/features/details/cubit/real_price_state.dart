@@ -18,7 +18,12 @@ final class RealPriceChanged extends RealPriceState {
   @override
   List<Object> get props => [realPrice];
 }
-
+class RealPriceNoInternet extends RealPriceState {
+  final String message;
+ const RealPriceNoInternet(this.message);
+  @override
+  List<Object> get props => [message];
+}
 final class RealPriceLoading extends RealPriceState {}
 
 final class RealPriceError extends RealPriceState {

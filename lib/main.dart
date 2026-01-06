@@ -1,18 +1,14 @@
-import 'dart:async';
-
 import 'package:caffeine/core/constants/app_theme.dart';
 import 'package:caffeine/core/helpers/confige_message.dart';
 import 'package:caffeine/core/routing/app_routing.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
-import 'package:caffeine/core/widgets/no_internet.dart';
-import 'package:caffeine/features/home/data/local_service.dart';
+import 'package:caffeine/core/utils/hive_init.dart';
 import 'package:caffeine/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();

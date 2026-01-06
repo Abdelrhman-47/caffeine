@@ -18,6 +18,7 @@ import 'package:caffeine/features/home/data/product_repo.dart';
 import 'package:caffeine/features/order/cubit/order_cubit.dart';
 import 'package:caffeine/features/order/data/order_repo.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
+import 'package:caffeine/features/profile/data/local_service.dart';
 import 'package:caffeine/features/profile/data/user_repo.dart';
 import 'package:flutter_paymob/flutter_paymob.dart';
 import 'package:get_it/get_it.dart';
@@ -63,9 +64,9 @@ Future<void> setupDependencies() async {
   getIt.registerFactory<FavCubit>(() => FavCubit(favRepo: getIt<FavRepo>()));
 
   getIt.registerFactory<AuthCubit>(() => AuthCubit(user: getIt<UserRepo>()));
-
+getIt.registerLazySingleton<LocalServiceProfile>(() => LocalServiceProfile());
   getIt.registerLazySingleton<UserDataRepositoryImpl>(
-    () => UserDataRepositoryImpl(apiServices: getIt<ApiServices>()),
+    () => UserDataRepositoryImpl(apiServices: getIt<ApiServices>(), localService: getIt<LocalServiceProfile>()),
   );
   getIt.registerFactory<UserDataCubit>(
     () => UserDataCubit(

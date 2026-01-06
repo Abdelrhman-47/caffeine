@@ -4,11 +4,13 @@
 
 import 'package:hive_ce/hive_ce.dart';
 import 'package:caffeine/features/home/data/product_model.dart';
+import 'package:caffeine/features/profile/data/user_data.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(OfferModelAdapter());
     registerAdapter(ProductModelAdapter());
+    registerAdapter(UserDataAdapter());
   }
 }
 
@@ -16,5 +18,6 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(OfferModelAdapter());
     registerAdapter(ProductModelAdapter());
+    registerAdapter(UserDataAdapter());
   }
 }

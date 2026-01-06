@@ -1,6 +1,13 @@
+
+import 'package:hive_ce/hive.dart';
+part 'user_data.g.dart';
+@HiveType(typeId: 2)
 class UserData {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final String email;
+  @HiveField(2)
   final String? imageUrl;
 
   UserData({required this.name, required this.email, this.imageUrl});

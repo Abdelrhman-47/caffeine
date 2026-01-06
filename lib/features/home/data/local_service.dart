@@ -1,19 +1,6 @@
 import 'package:caffeine/features/home/data/product_model.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/adapters.dart';
-
-class InitHive {
-  static Future<void> init() async {
-    await Hive.initFlutter();
-
-    Hive.registerAdapter(ProductModelAdapter());
-    Hive.registerAdapter(OfferModelAdapter());
-
-    await Hive.openBox<ProductModel>('productBox');
-    await Hive.openBox<OfferModel>('offerBox');
-  }
-}
-
 class HiveService {
   static const String productBoxName = 'productBox';
   static const String offerBoxName = 'offerBox';
@@ -24,7 +11,6 @@ class HiveService {
   Box<OfferModel> get _offerBox =>
       Hive.box<OfferModel>(offerBoxName);
 
-  // -------- Products --------
 
   List<ProductModel> getCachedProducts() {
     return _productBox.values.toList();
@@ -37,7 +23,6 @@ class HiveService {
     }
   }
 
-  // -------- Offers --------
 
   List<OfferModel> getCachedOffers() {
     return _offerBox.values.toList();

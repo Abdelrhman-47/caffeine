@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:caffeine/core/network/api_services.dart';
+import 'package:caffeine/features/profile/data/local_service.dart';
 import 'package:caffeine/features/profile/data/user_data.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Abstract repository interface for user data operations
 abstract class UserDataRepository {
   Future<Either<String, UserData>> getUserData();
   Future<Either<String, void>> updateProfile({
@@ -13,16 +13,18 @@ abstract class UserDataRepository {
   });
 }
 
-/// Implementation of UserDataRepository using Supabase
 class UserDataRepositoryImpl implements UserDataRepository {
-  UserDataRepositoryImpl({required ApiServices apiServices})
-      : _apiServices = apiServices;
+  UserDataRepositoryImpl({
+    required ApiServices apiServices,
+    required LocalServiceProfile localService,
+  }) : _apiServices = apiServices,
+       _localService = localService;
 
   final ApiServices _apiServices;
-  
+  final LocalServiceProfile _localService;
+
   static const String _usersTable = 'users';
 
-  /// Gets the current authenticated user's ID
   String? get _currentUserId => Supabase.instance.client.auth.currentUser?.id;
 
   @override
@@ -38,12 +40,16 @@ class UserDataRepositoryImpl implements UserDataRepository {
       if (response.isEmpty) {
         return const Left('User data not found');
       }
-      final userData = UserData.fromJson(response[0]);      
+      final userData = UserData.fromJson(response[0]);
+      await _localService.saveUserData(userData);
+
       return Right(userData);
-      
     } catch (e) {
-      log('Error fetching user data: $e');
-      return Left(_handleError(e));
+      final _cashed = _localService.getUserData();
+      if (_cashed != null) {
+        return right(_cashed);
+      }
+      return left('Failed to fetch user data: ${e.toString()}');
     }
   }
 
@@ -65,17 +71,13 @@ class UserDataRepositoryImpl implements UserDataRepository {
       log('Updating profile - Name: $name, Image URL: $imageUrl');
 
       // Update user profile in database
-      await _apiServices.patch(
-        '$_usersTable?user_id=eq.$userId',
-        {
-          'name': name,
-          'image_url': imageUrl,
-        },
-      );
+      await _apiServices.patch('$_usersTable?user_id=eq.$userId', {
+        'name': name,
+        'image_url': imageUrl,
+      });
 
       log('Profile updated successfully');
       return const Right(null);
-      
     } catch (e) {
       log('Error updating profile: $e');
       return Left(_handleError(e));

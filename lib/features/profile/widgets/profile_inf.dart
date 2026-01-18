@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
 import 'package:caffeine/features/profile/cubit/user_data_cubit.dart';
@@ -38,10 +39,11 @@ class ProfileInf extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child: Image.network(
-                  userData.imageUrl??'',
+
+                child: CachedNetworkImage(
+                  imageUrl: userData.imageUrl ?? '',
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
+                  errorWidget: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[200],
                       child: Icon(

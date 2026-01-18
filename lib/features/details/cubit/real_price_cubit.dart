@@ -11,9 +11,13 @@ class RealPriceCubit extends Cubit<RealPriceState> {
     : _detailsRepo = detailsRepo,
       super(RealPriceInitial());
   double _realPrice = 0;
+  String? _lastSize;
+  int? _lastProductId;
 
   double get realPrice => _realPrice;
   Future<void> getPrice(String size, int productId) async {
+    _lastSize = size;
+    _lastProductId = productId;
     emit(RealPriceLoading());
     try {
       final price = await _detailsRepo.getPrice(size, productId);
@@ -26,6 +30,12 @@ class RealPriceCubit extends Cubit<RealPriceState> {
       } else {
         emit(RealPriceError(e.toString()));
       }
+    }
+  }
+
+  void retry() {
+    if (_lastSize != null && _lastProductId != null) {
+      getPrice(_lastSize!, _lastProductId!);
     }
   }
 }

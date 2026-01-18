@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
   final bool outLineButton;
   final Color? borderColor;
   final TextStyle textStyle;
+  final bool isLoading;
 
   const CustomButton({
     super.key,
@@ -25,6 +26,7 @@ class CustomButton extends StatelessWidget {
     required this.borderRadius,
     required this.outLineButton,
     this.borderColor, required this.textStyle,
+    this.isLoading = false,
   });
 
   @override
@@ -33,7 +35,7 @@ class CustomButton extends StatelessWidget {
       height: height,
       width: width,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           side: outLineButton
               ? BorderSide(color: borderColor ?? Colors.brown, width: 2.w)
@@ -43,8 +45,17 @@ class CustomButton extends StatelessWidget {
           padding:  EdgeInsets.symmetric(vertical: 9.h, horizontal: 0.w),
           shape: RoundedRectangleBorder(borderRadius: borderRadius),
         ),
-        child: Text(text, style: textStyle)),
-      
+        child: isLoading
+            ? SizedBox(
+                height: 20.h,
+                width: 20.w,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.w,
+                  valueColor: AlwaysStoppedAnimation<Color>(textColor),
+                ),
+              )
+            : Text(text, style: textStyle),
+      ),
     );
   }
 }

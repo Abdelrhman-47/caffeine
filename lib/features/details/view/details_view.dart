@@ -1,5 +1,8 @@
 import 'package:caffeine/core/constants/app_colors.dart';
 import 'package:caffeine/core/helpers/spacing.dart';
+import 'package:caffeine/core/network/connectivity_cubit.dart';
+import 'package:caffeine/core/network/connectivity_state.dart';
+import 'package:caffeine/core/widgets/connectivity_builder.dart';
 import 'package:caffeine/core/widgets/no_internet.dart';
 import 'package:caffeine/features/details/cubit/real_price_cubit.dart';
 import 'package:caffeine/features/details/cubit/real_price_state.dart';
@@ -43,64 +46,73 @@ class _DetailsViewState extends State<DetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RealPriceCubit, RealPriceState>(
-      builder: (context, state) {
-        if (state is RealPriceError) {
-          return Center(
-            child: Text('Error: ${state.message}'),
-          );
-        } else if (state is RealPriceNoInternet) {
-          return const NoInternetScreen();
-        }
-        return SafeArea(
-          child: Scaffold(
-            bottomNavigationBar: BottomSection(
-              avragePrice: widget.product.price,
-              productId: widget.product.id,
-            ),
-            backgroundColor: Colors.white,
-            body: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: _gradientColors,
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+    return ConnectivityBuilder(
+      builder: (context, isConnected) => BlocListener<ConnectivityCubit, ConnectivityState>(
+        listener: (context, state) {
+          if (state is ConnectivityConnected) {
+            context.read<RealPriceCubit>().retry();
+          }
+        },
+        child: BlocBuilder<RealPriceCubit, RealPriceState>(
+          builder: (context, state) {
+            if (state is RealPriceError) {
+              return Center(
+                child: Text('Error: ${state.message}'),
+              );
+            } else if (state is RealPriceNoInternet) {
+              return const NoInternetScreen();
+            }
+            return SafeArea(
+              child: Scaffold(
+                bottomNavigationBar: BottomSection(
+                  avragePrice: widget.product.price,
+                  productId: widget.product.id,
+                ),
+                backgroundColor: Colors.white,
+                body: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: _gradientColors,
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(20.r),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const HeaderSectionDetailes(),
+
+                        SizedBox(height: 80.h),
+
+                        ProductImageSection(
+                          scale: sizeScale[selectedSizeIndex],
+                          imagePath: widget.product.url,
+                        ),
+
+                        Spacing.vSpace(90.h),
+
+                        SizeSelector(
+                          sizes: sizes,
+                          selectedIndex: selectedSizeIndex,
+                          onSizeSelected: (index) {
+                            setState(() {
+                              selectedSizeIndex = index;
+                            });
+                          },
+                          productInt: widget.product.id,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.all(20.r),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const HeaderSectionDetailes(),
-
-                    SizedBox(height: 80.h),
-
-                    ProductImageSection(
-                      scale: sizeScale[selectedSizeIndex],
-                      imagePath: widget.product.url,
-                    ),
-
-                    Spacing.vSpace(90.h),
-
-                    SizeSelector(
-                      sizes: sizes,
-                      selectedIndex: selectedSizeIndex,
-                      onSizeSelected: (index) {
-                        setState(() {
-                          selectedSizeIndex = index;
-                        });
-                      },
-                      productInt: widget.product.id,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }

@@ -90,7 +90,6 @@ class OrderSummarySection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Pricing breakdown rows
                 Column(
                   children: [
                     Row(
@@ -206,11 +205,11 @@ class OrderSummarySection extends StatelessWidget {
       loaded: (orders) {
         return CustomButton(
           text: 'Confirm',
-          onPressed: () {
+          onPressed: () { 
         context.read<OrderCubit>().finalizeOrder(orders);
             context.read<CartCubit>().deleteall();
             context.read<OrderCubit>().deleteall();
-            context.go(AppRoutes.homeLayout);
+            
           },
           textColor: Colors.white,
           height: 45.h,

@@ -97,7 +97,7 @@ class UserRepoImplement extends UserRepo {
   }
 
   @override
-  Future<void> logout() async {
+   Future<void> logout() async {
     await _supabase.auth.signOut();
   }
 

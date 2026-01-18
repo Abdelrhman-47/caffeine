@@ -129,26 +129,33 @@ class _RegisterComponentsState extends State<RegisterComponents> {
                   context.pushReplacementNamed(AppRoutes.homeLayout);
                 }
               },
-        
-              child: CustomButton(
-                backgroundColor: AppColors.buttonColor,
-                text: 'Sign Up',
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    context.read<AuthCubit>().signUp(
-                      email: _email.text.trim(),
-                      password: _password.text,
-                      name: _name.text,
-                      url: '',
-                    );
-                  }
+
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  final isLoading = state is AuthLoading;
+                
+                  return CustomButton(
+                    isLoading: isLoading,
+                    backgroundColor: AppColors.buttonColor,
+                    text: 'Sign Up',
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<AuthCubit>().signUp(
+                          email: _email.text.trim(),
+                          password: _password.text,
+                          name: _name.text,
+                          url: '',
+                        );
+                      }
+                    },
+                    textColor: Colors.white,
+                    height: 40.h,
+                    width: 400.w,
+                    textStyle: TextStyle(fontSize: 15.sp),
+                    borderRadius: BorderRadius.circular(8.r),
+                    outLineButton: false,
+                  );
                 },
-                textColor: Colors.white,
-                height: 40.h,
-                width: 400.w,
-                textStyle: TextStyle(fontSize: 15.sp),
-                borderRadius: BorderRadius.circular(8.r),
-                outLineButton: false,
               ),
             ),
             Spacing.vSpace(1.h),

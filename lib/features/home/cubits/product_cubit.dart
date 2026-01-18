@@ -10,16 +10,14 @@ class ProductCubit extends Cubit<ProductState> {
         super(ProductInitial());
   final ProductRepo _productRepo;
     Timer? _debounce;
-  bool _isLoaded=false;
   Future<void> getAllProducts() async {
-    if (!_isLoaded) {
+    {
       emit(ProductLoading());
           final result = await _productRepo.getAllProducts();
     result.fold((l)=>emit(ProductFailure(l)), (r)=>emit(ProductSuccess(r)));
     }
 
     
-    _isLoaded=true;
   
 
   }

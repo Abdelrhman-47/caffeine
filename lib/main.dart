@@ -1,5 +1,7 @@
 import 'package:caffeine/core/constants/app_theme.dart';
 import 'package:caffeine/core/helpers/confige_message.dart';
+import 'package:caffeine/core/network/connectivity_cubit.dart';
+import 'package:caffeine/core/network/connectivity_state.dart';
 import 'package:caffeine/core/routing/app_routing.dart';
 import 'package:caffeine/core/utils/di_helpers.dart';
 import 'package:caffeine/core/utils/hive_init.dart';
@@ -7,6 +9,7 @@ import 'package:caffeine/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,10 +20,9 @@ void main() async{
   await setupDependencies();
 await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
-    await ConfigMessage.init();
-    FirebaseMessaging.instance.subscribeToTopic("menu_updates");
-
+  );
+  await ConfigMessage.init();
+  FirebaseMessaging.instance.subscribeToTopic("menu_updates");
 
   runApp(const Caffeine());
 }
@@ -33,30 +35,7 @@ class Caffeine extends StatefulWidget {
 }
 
 class _CaffeineState extends State<Caffeine> {
-//  bool _isConected=false;
- //   late StreamSubscription<InternetStatus> _subscription;
-    @override
-  // void initState() {
-  // _subscription = InternetConnection().onStatusChange.listen((status) {
-  //   switch(status){
-  //     case InternetStatus.connected:
-  //       setState(() {
-  //         _isConected=true;
-  //       });
-  //       break;
-  //     case InternetStatus.disconnected:
-  //       setState(() {
-  //         _isConected=false;
-  //       });
-  //       break;
-  //   }
-  //   });    super.initState();
-  // }
-  // @override
-  // void dispose() {
-  //   _subscription.cancel();
-  //   super.dispose();
-  // }
+
     
 
   @override Widget build(BuildContext context) {
@@ -64,25 +43,38 @@ class _CaffeineState extends State<Caffeine> {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      child://_isConected ?
-       MaterialApp.router(
-        theme: AppTheme.primary.copyWith(
-          textTheme: GoogleFonts.merriweatherTextTheme(
-            Theme.of(context).textTheme,
+      child: BlocProvider(
+        create: (context) => getIt<ConnectivityCubit>(),
+        child: BlocListener<ConnectivityCubit, ConnectivityState>(
+          listener: (context, state) {
+            if (state is ConnectivityDisconnected) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No internet connection'),
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            } else if (state is ConnectivityConnected) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Internet connection restored'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            }
+          },
+          child: MaterialApp.router(
+          theme: AppTheme.primary.copyWith(
+            textTheme: GoogleFonts.merriweatherTextTheme(
+              Theme.of(context).textTheme,
+            ),
           ),
+          debugShowCheckedModeBanner: false,
+          routerConfig: AppRouter.router,
         ),
-        debugShowCheckedModeBanner: false,
-        routerConfig: AppRouter.router,
+        ),
       )
-      // :MaterialApp(
-      //   theme: AppTheme.primary.copyWith(
-      //     textTheme: GoogleFonts.merriweatherTextTheme(
-      //       Theme.of(context).textTheme,
-      //     ),
-      //   ),
-      //   debugShowCheckedModeBanner: false,
-      //   home: const NoInternetScreen(),
-      // ),
+  
     );
   }
 }

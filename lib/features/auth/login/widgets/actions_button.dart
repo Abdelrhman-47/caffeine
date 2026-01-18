@@ -71,16 +71,22 @@ class ActionsButton extends StatelessWidget {
             }
           },
 
-          child: CustomButton(
-            backgroundColor: AppColors.buttonColor,
-            text: 'Log In',
-            onPressed: onPressedLogin,
-            textColor: Colors.white,
-            height: 44.h,
-            width: 400.w,
-            textStyle: TextStyle(fontSize: 15.sp),
-            borderRadius: BorderRadius.circular(11.r),
-            outLineButton: false,
+          child: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              final isLoading = state is AuthLoading;
+              return CustomButton(
+                backgroundColor: AppColors.buttonColor,
+                text: 'Log In',
+                onPressed: onPressedLogin,
+                textColor: Colors.white,
+                height: 44.h,
+                width: 400.w,
+                textStyle: TextStyle(fontSize: 15.sp),
+                borderRadius: BorderRadius.circular(11.r),
+                outLineButton: false,
+                isLoading: isLoading,
+              );
+            },
           ),
         ),
 

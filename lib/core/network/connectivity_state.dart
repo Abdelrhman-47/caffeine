@@ -1,0 +1,14 @@
+import 'package:equatable/equatable.dart';
+
+abstract class ConnectivityState extends Equatable {
+  const ConnectivityState();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class ConnectivityInitial extends ConnectivityState {}
+
+final class ConnectivityConnected extends ConnectivityState {}
+
+final class ConnectivityDisconnected extends ConnectivityState {}
